@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="view.ConnectionsReplicationForm">
+  <grid id="27dc6" binding="panel1" default-binding="true" layout-manager="GridLayoutManager" row-count="6" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="0" left="0" bottom="0" right="0"/>
+    <constraints>
+      <xy x="20" y="20" width="440" height="258"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <component id="b2c23" class="javax.swing.JButton" binding="btnRemover">
+        <constraints>
+          <grid row="0" column="2" row-span="6" col-span="1" vsize-policy="0" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Remover"/>
+        </properties>
+      </component>
+      <component id="ed18" class="javax.swing.JButton" binding="btnSalvar">
+        <constraints>
+          <grid row="0" column="3" row-span="6" col-span="1" vsize-policy="0" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Salvar"/>
+        </properties>
+      </component>
+      <component id="109a7" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Nome do Banco:"/>
+        </properties>
+      </component>
+      <component id="9a2e9" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Modelo do Banco:"/>
+        </properties>
+      </component>
+      <component id="17c7" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Porta:"/>
+        </properties>
+      </component>
+      <component id="8685e" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Endereço(IP):"/>
+        </properties>
+      </component>
+      <component id="ab23e" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Descrição:"/>
+        </properties>
+      </component>
+      <component id="25185" class="javax.swing.JButton" binding="btnBuscar">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Buscar"/>
+        </properties>
+      </component>
+      <component id="70ace" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+        <constraints>
+          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="140" height="30"/>
+          </grid>
+        </constraints>
+        <properties>
+          <name value="tbDBaddress"/>
+        </properties>
+      </component>
+      <component id="1dbe3" class="javax.swing.JButton" binding="btnAdicionar">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="140" height="30"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="Adicionar"/>
+        </properties>
+      </component>
+      <component id="eeff6" class="javax.swing.JTextField" default-binding="true">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="140" height="30"/>
+          </grid>
+        </constraints>
+        <properties>
+          <name value="tbDescription"/>
+        </properties>
+      </component>
+      <component id="5b315" class="javax.swing.JTextField" default-binding="true">
+        <constraints>
+          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="140" height="30"/>
+          </grid>
+        </constraints>
+        <properties>
+          <name value="tbDBport"/>
+        </properties>
+      </component>
+      <component id="bcb36" class="javax.swing.JTextField" default-binding="true">
+        <constraints>
+          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="140" height="30"/>
+          </grid>
+        </constraints>
+        <properties>
+          <name value="tbdbName"/>
+        </properties>
+      </component>
+      <component id="6c9bb" class="javax.swing.JTextField" default-binding="true">
+        <constraints>
+          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="140" height="30"/>
+          </grid>
+        </constraints>
+        <properties>
+          <name value="tbDBmodel"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>

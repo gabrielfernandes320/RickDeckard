@@ -26,6 +26,10 @@ public class ConectionReplication {
         DatabaseURL = databaseURL;
     }
 
+    public ConectionReplication() {
+
+    }
+
     public String getReplicationCode() {
         return ReplicationCode;
     }
