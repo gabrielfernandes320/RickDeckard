@@ -12,13 +12,13 @@ public class ConectionsReplicationDAO extends MasterDAO {
     private String is_select = "select codigo_replicacao,nome,endereco,porta,database,tipo_banco,url from TB_REPLICACAO where codigo_replicacao = ?";
 
     private String is_insert = "INSERT INTO TB_REPLICACAO			"
-            +"(usuario,nome,"+
+            + "(usuario,nome," +
             "endereco," +
             "porta," +
             "database," +
             "tipo_banco," +
-            "url)"+
-            "VALUES("+
+            "url)" +
+            "VALUES(" +
             "?,?,?,?,?,?,?) ";
 
     private PreparedStatement pst_select;
@@ -27,8 +27,7 @@ public class ConectionsReplicationDAO extends MasterDAO {
     Connection io_connection;
 
     public ConectionsReplicationDAO(Connection connection)
-            throws SQLException
-    {
+            throws SQLException {
         io_connection = connection;
         pst_select = connection.prepareStatement(is_select);
         pst_insert = connection.prepareStatement(is_insert);
@@ -47,7 +46,7 @@ public class ConectionsReplicationDAO extends MasterDAO {
         ConectionReplication connRep = null;
 
         // Seta os parametros.
-        Set(pst_select, 1, ((ConectionReplication)parameter).getConnectionName());
+        Set(pst_select, 1, ((ConectionReplication) parameter).getConnectionName());
 
         ResultSet rst = pst_select.executeQuery();
 
@@ -57,11 +56,12 @@ public class ConectionsReplicationDAO extends MasterDAO {
             connRep.setConnectionAddress(rst.getString("address"));
             connRep.setConnectionName(rst.getString("name"));
             connRep.setConnectionPort(rst.getString("port"));
-            connRep.setDatabaseSID();
+            connRep.setDatabaseSID("dbSID");
 
-        return usuario;
+            return connRep;
 
-
+        }
+        return null;
     }
 
     @Override
@@ -71,6 +71,7 @@ public class ConectionsReplicationDAO extends MasterDAO {
 
     @Override
     public void Insert(Object parameter) throws SQLException {
+
 
     }
 
