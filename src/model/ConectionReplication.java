@@ -3,6 +3,8 @@ package model;
 public class ConectionReplication {
 
     private String ReplicationCode;
+    
+    private String User;
 
     private String ConnectionName;
 
@@ -16,8 +18,9 @@ public class ConectionReplication {
 
     private String DatabaseURL;
 
-    public ConectionReplication(String replicationCode, String connectionName, String connectionAddress, String connectionPort, String databaseSID, String databaseType, String databaseURL) {
+    public ConectionReplication(String replicationCode, String user,String connectionName, String connectionAddress, String connectionPort, String databaseSID, String databaseType, String databaseURL) {
         ReplicationCode = replicationCode;
+        User = user;
         ConnectionName = connectionName;
         ConnectionAddress = connectionAddress;
         ConnectionPort = connectionPort;
@@ -85,4 +88,12 @@ public class ConectionReplication {
     public void setDatabaseURL(String databaseURL) {
         DatabaseURL = databaseURL;
     }
+
+	public String getUser() {
+		return User;
+	}
+
+	public void setUser(String user) {
+		User = user;
+	}
 }

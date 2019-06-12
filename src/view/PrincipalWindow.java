@@ -14,16 +14,7 @@ import java.awt.event.HierarchyEvent;
 import java.beans.PropertyVetoException;
 import java.sql.SQLException;
 
-import javax.swing.ImageIcon;
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import model.Usuario;
 import java.awt.event.MouseAdapter;
@@ -41,10 +32,10 @@ public class PrincipalWindow extends JFrame {
     JMenu menuCadastros;
     JMenu menuReplica;
 
-    ConnectionsReplicationForm crf;
+    ReplicationFrm rf;
     JLabel lbUsuarioHora;
 
-    public static void main(String[] args) {
+    public static void main(String[] args){
         PrincipalWindow pw = new PrincipalWindow();
         pw.setVisible(true);
     }
@@ -180,20 +171,20 @@ public class PrincipalWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (JanelaVerificar(ReplicationDirectionFrm.class.getName())) {
-                    JanelaFocar(crf);
+                    JanelaFocar(rf);
                 }
                 else {
-                    crf = new ConnectionsReplicationForm();
-                    crf.setName(ConnectionsReplicationForm.class.getName());
-                    crf.setLocation(1, 1);
-                    desktopPane.add(crf);
-                    crf.setVisible(true);
+                	rf = new ReplicationFrm();
+                	rf.setName(ReplicationFrm.class.getName());
+                	rf.setLocation(1, 1);
+                    desktopPane.add(rf);
+                    rf.setVisible(true);
                 }
 
 
             }
 
-            private void JanelaFocar(ConnectionsReplicationForm us) {
+            private void JanelaFocar(ReplicationFrm us) {
                 try
                 {
                     us.setSelected(true);

@@ -20,7 +20,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import database.ConectionsReplicationDAO;
 import database.ConnectionFactory;
+import model.ConectionReplication;
 
 
 
@@ -31,10 +33,10 @@ public class ReplicationFrm extends JInternalFrame {
 	private JButton btnSalvar;
 	private JButton btnRemover;
 	private Boolean IsUpdate;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
+	private JTextField tbDescription;
+	private JTextField tbIP;
+	private JTextField tbPort;
+	private JTextField tbDBname;
 
 	/**
 	 * Launch the application.
@@ -58,37 +60,37 @@ public class ReplicationFrm extends JInternalFrame {
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.setBounds(10, 11, 96, 31);
 		btnBuscar.setPreferredSize(new Dimension(40, 25));
-		btnBuscar.setBackground(new Color(240, 240, 240));
-		btnBuscar.setIcon(new ImageIcon(ReplicationFrm.class.getResource("/view/images/localizar.png")));
+		//btnBuscar.setBackground(new Color(240, 240, 240));
+		//btnBuscar.setIcon(new ImageIcon(ReplicationFrm.class.getResource("/view/images/localizar.png")));
 		getContentPane().add(btnBuscar);
 
 		btnAdicionar = new JButton("Adicionar");
-		btnAdicionar.setIcon(new ImageIcon(ReplicationFrm.class.getResource("/view/images/adicionar.png")));
+		//btnAdicionar.setIcon(new ImageIcon(ReplicationFrm.class.getResource("/view/images/adicionar.png")));
 		btnAdicionar.setPreferredSize(new Dimension(40, 25));
-		btnAdicionar.setBackground(SystemColor.menu);
+		//btnAdicionar.setBackground(SystemColor.menu);
 		btnAdicionar.setBounds(104, 11, 114, 31);
 		getContentPane().add(btnAdicionar);
 
 		btnSalvar = new JButton("Salvar");
-		btnSalvar.setIcon(new ImageIcon(ReplicationFrm.class.getResource("/view/images/salvar.png")));
+		//btnSalvar.setIcon(new ImageIcon(ReplicationFrm.class.getResource("/view/images/salvar.png")));
 		btnSalvar.setPreferredSize(new Dimension(40, 25));
-		btnSalvar.setBackground(SystemColor.menu);
+		//btnSalvar.setBackground(SystemColor.menu);
 		btnSalvar.setBounds(328, 11, 114, 31);
 		getContentPane().add(btnSalvar);
 
 		btnRemover = new JButton("Remover");
-		btnRemover.setIcon(new ImageIcon(ReplicationFrm.class.getResource("/view/images/remover.png")));
+		//btnRemover.setIcon(new ImageIcon(ReplicationFrm.class.getResource("/view/images/remover.png")));
 		btnRemover.setPreferredSize(new Dimension(40, 25));
-		btnRemover.setBackground(SystemColor.menu);
+		//btnRemover.setBackground(SystemColor.menu);
 		btnRemover.setBounds(216, 11, 114, 31);
 		getContentPane().add(btnRemover);
 
-		JLabel lblDescricao = new JLabel("Descri\u00E7\u00E3o:");
+		JLabel lblDescricao = new JLabel("Descricao:");
 		lblDescricao.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblDescricao.setBounds(60, 79, 68, 14);
 		getContentPane().add(lblDescricao);
 
-		JLabel lblEnderecoIP = new JLabel("Endere\u00E7o (IP):");
+		JLabel lblEnderecoIP = new JLabel("Endereco (IP):");
 		lblEnderecoIP.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblEnderecoIP.setBounds(32, 104, 96, 14);
 		getContentPane().add(lblEnderecoIP);
@@ -108,56 +110,58 @@ public class ReplicationFrm extends JInternalFrame {
 		lblModeloDoBanco.setBounds(10, 192, 118, 14);
 		getContentPane().add(lblModeloDoBanco);
 		
-		textField = new JTextField();
-		textField.setBounds(138, 78, 304, 20);
-		getContentPane().add(textField);
-		textField.setColumns(10);
+		tbDescription = new JTextField();
+		tbDescription.setBounds(138, 78, 304, 20);
+		getContentPane().add(tbDescription);
+		tbDescription.setColumns(10);
 		
-		textField_1 = new JTextField();
-		textField_1.setBounds(138, 103, 304, 20);
-		getContentPane().add(textField_1);
-		textField_1.setColumns(10);
+		tbIP = new JTextField();
+		tbIP.setBounds(138, 103, 304, 20);
+		getContentPane().add(tbIP);
+		tbIP.setColumns(10);
 		
-		textField_2 = new JTextField();
-		textField_2.setBounds(138, 128, 68, 20);
-		getContentPane().add(textField_2);
-		textField_2.setColumns(10);
+		tbPort = new JTextField();
+		tbPort.setBounds(138, 128, 68, 20);
+		getContentPane().add(tbPort);
+		tbPort.setColumns(10);
 		
-		textField_3 = new JTextField();
-		textField_3.setBounds(138, 159, 304, 20);
-		getContentPane().add(textField_3);
-		textField_3.setColumns(10);
+		tbDBname = new JTextField();
+		tbDBname.setBounds(138, 159, 304, 20);
+		getContentPane().add(tbDBname);
+		tbDBname.setColumns(10);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(138, 190, 304, 22);
-		getContentPane().add(comboBox);
+		JComboBox cbDBmodel = new JComboBox();
+		cbDBmodel.setModel(new DefaultComboBoxModel(new String[] {"MySQL", "PostGreSQL"}));
+		cbDBmodel.setBounds(138, 190, 304, 22);
+		getContentPane().add(cbDBmodel);
 		
-		JButton btnTestarConexo = new JButton("Testar Conex\u00E3o");
+		JButton btnTestarConexo = new JButton("Testar Conexao");
 		btnTestarConexo.setBounds(328, 234, 114, 23);
 		getContentPane().add(btnTestarConexo);
 
-		// tem que colocar as modalidades dentro do JComboBox
-//		Connection conn = ConnectionFactory.getConnection("master", "admin", "admin");
-//		PlanosDAO dao = new PlanosDAO(conn);
-//		String modalidade[];
 //		
 		Connection conn = ConnectionFactory.getConnection("master", "admin", "admin");
-
-//		// PlanosDAO pla = new PlanosDAO(conn);
-//
-//		ModalidadesDAO mod;
-//
-//		try {
-//			mod = new ModalidadesDAO(conn);
-//			modalidades = mod.SelectAllModalidade();
-//		} catch (SQLException e2) {
-//			// TODO Auto-generated catch block
-//			e2.printStackTrace();
-//		}
-
+		ConectionsReplicationDAO crd = null;
+		try {
+			crd = new ConectionsReplicationDAO(conn);
+		} catch (SQLException e1) {
+			
+			e1.printStackTrace();
+		}
+		Connection dbURL = ConnectionFactory.getConnection(tbDBname.getText(), "admin", "admin");
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				ConectionReplication conrep = new ConectionReplication();
+				conrep.setConnectionAddress(tbIP.getText());
+				conrep.setConnectionName(tbDescription.getText());
+				conrep.setConnectionPort(tbPort.getText());
+				conrep.setDatabaseSID(tbDBname.getText());
+				conrep.setDatabaseType((String) cbDBmodel.getSelectedItem());
+				conrep.setUser("gabriel");
+				conrep.setDatabaseURL(dbURL.toString());
 				
+				
+			
 				
 			}
 		});
@@ -181,19 +185,6 @@ public class ReplicationFrm extends JInternalFrame {
 		});
 	}
 
-//	public void Update(final Plano p) {
-//
-//		txfPlano.setText(p.getPlano());
-//		txfValor.setText("" + p.getValor());
-//		cbxModalidade.setSelectedItem(p.getModalidade());
-//		abrirBotoes();
-//		updateCampos();
-//		IsUpdate = true;
-//
-////	while()
-////	cbxModalidade.setSelectedIndex();
-////		
-//	}
 
 	public void abrirCampos() {
 		
