@@ -148,7 +148,7 @@ public class ReplicationFrm extends JInternalFrame {
 			
 			e1.printStackTrace();
 		}
-		Connection dbURL = ConnectionFactory.getConnection(tbDBname.getText(), "admin", "admin");
+//		Connection dbURL = ConnectionFactory.getConnection(tbDBname.getText(), "admin", "admin");
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ConectionReplication conrep = new ConectionReplication();
@@ -158,7 +158,7 @@ public class ReplicationFrm extends JInternalFrame {
 				conrep.setDatabaseSID(tbDBname.getText());
 				conrep.setDatabaseType((String) cbDBmodel.getSelectedItem());
 				conrep.setUser("gabriel");
-				conrep.setDatabaseURL(dbURL.toString());
+//				conrep.setDatabaseURL(dbURL.toString());
 				
 				
 			

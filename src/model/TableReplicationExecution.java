@@ -17,8 +17,13 @@ public class TableReplicationExecution {
 	private Timestamp end_date_hour;
 	private Timestamp date_current_to;
 	private int process_lines;
-	private char success;
+	private String success;
 	private String message;
+	
+	public TableReplicationExecution() {
+		super();
+	}
+	
 	public int getTable_Code() {
 		return table_Code;
 	}
@@ -97,22 +102,24 @@ public class TableReplicationExecution {
 	public void setProcess_lines(int process_lines) {
 		this.process_lines = process_lines;
 	}
-	public char getSuccess() {
-		return success;
-	}
-	public void setSuccess(char success) {
-		this.success = success;
-	}
 	public String getMessage() {
 		return message;
 	}
+	public String getSuccess() {
+		return success;
+	}
+
+	public void setSuccess(String success) {
+		this.success = success;
+	}
+
 	public void setMessage(String message) {
 		this.message = message;
 	}
 	public TableReplicationExecution(int table_Code, Timestamp curren_tDate, String process, String source_Database,
 			String source_User, String destination_database, String destination_user,
 			Timestamp execution_start_date_hour, int order, Timestamp start_date_hour, Timestamp end_date_hour,
-			Timestamp date_current_to, int process_lines, char success, String message) {
+			Timestamp date_current_to, int process_lines, String success, String message) {
 		super();
 		this.table_Code = table_Code;
 		this.curren_tDate = curren_tDate;
