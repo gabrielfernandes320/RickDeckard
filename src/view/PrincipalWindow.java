@@ -29,6 +29,7 @@ public class PrincipalWindow extends JFrame {
     JDesktopPane desktopPane;
     JMenuBar menuBar;
     JMenuItem itemConnectionReplication;
+    JMenuItem itemReplicationTable;
     JMenu menuCadastros;
     JMenu menuReplica;
 
@@ -156,16 +157,49 @@ public class PrincipalWindow extends JFrame {
         menuReplica = new JMenu("Replicacao");
 
         itemConnectionReplication = new JMenuItem("Conexoes");
-
+        itemReplicationTable = new JMenuItem("temp");
         //icones dos itens
 
         //itemUsuariosSist.setIcon(new ImageIcon(PlansFrm.class.getResource("/view/images/aplicacao.png")));
         menuCadastros.add(itemConnectionReplication);
+        menuCadastros.add(itemReplicationTable);
 
         menuBar.add(menuCadastros);
 
         //Aï¿½ï¿½es para os item abaixo
         //Sistema
+        
+        itemReplicationTable.addActionListener(new ActionListener() {
+        		ReplicationTableFrm rtf;
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (JanelaVerificar(ReplicationDirectionFrm.class.getName())) {
+                    
+                }
+                else {
+                	rtf = new ReplicationTableFrm();
+                	rtf.setName(ReplicationFrm.class.getName());
+                	rtf.setLocation(1, 1);
+                    desktopPane.add(rtf);
+                    rtf.setVisible(true);
+                }
+
+
+            }
+
+            private void JanelaFocar(ReplicationFrm us) {
+                try
+                {
+                    us.setSelected(true);
+                }
+                catch	(PropertyVetoException	ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+        });
+
+        
         itemConnectionReplication.addActionListener(new ActionListener() {
 
             @Override

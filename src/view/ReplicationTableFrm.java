@@ -37,15 +37,15 @@ public class ReplicationTableFrm extends JInternalFrame {
 	private JLabel lblOperao;
 	private JLabel lblTabelaDestino;
 	private JLabel lblSalvar;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
-	private JTextField textField_5;
+	private JTextField txf_proccess;
+	private JTextField txf_order;
+	private JTextField txf_source_table;
+	private JTextField txf_operation;
+	private JTextField txf_destiny_table;
+	private JTextField txf_save;
 	private JLabel lblColunaTipo;
 	private JLabel lblColunaChave;
-	private JTextField textField_6;
+	private JTextField txf_key_column;
 
 	/**
 	 * Launch the application.
@@ -70,25 +70,25 @@ public class ReplicationTableFrm extends JInternalFrame {
 		btnBuscar.setBounds(10, 11, 96, 31);
 		btnBuscar.setPreferredSize(new Dimension(40, 25));
 		btnBuscar.setBackground(new Color(240, 240, 240));
-		btnBuscar.setIcon(new ImageIcon(ReplicationTableFrm.class.getResource("/view/images/localizar.png")));
+//		btnBuscar.setIcon(new ImageIcon(ReplicationTableFrm.class.getResource("/view/images/localizar.png")));
 		getContentPane().add(btnBuscar);
 
 		btnAdicionar = new JButton("Adicionar");
-		btnAdicionar.setIcon(new ImageIcon(ReplicationTableFrm.class.getResource("/view/images/adicionar.png")));
+//		btnAdicionar.setIcon(new ImageIcon(ReplicationTableFrm.class.getResource("/view/images/adicionar.png")));
 		btnAdicionar.setPreferredSize(new Dimension(40, 25));
 		btnAdicionar.setBackground(SystemColor.menu);
 		btnAdicionar.setBounds(104, 11, 114, 31);
 		getContentPane().add(btnAdicionar);
 
 		btnSalvar = new JButton("Salvar");
-		btnSalvar.setIcon(new ImageIcon(ReplicationTableFrm.class.getResource("/view/images/salvar.png")));
+//		btnSalvar.setIcon(new ImageIcon(ReplicationTableFrm.class.getResource("/view/images/salvar.png")));
 		btnSalvar.setPreferredSize(new Dimension(40, 25));
 		btnSalvar.setBackground(SystemColor.menu);
 		btnSalvar.setBounds(328, 11, 114, 31);
 		getContentPane().add(btnSalvar);
 
 		btnRemover = new JButton("Remover");
-		btnRemover.setIcon(new ImageIcon(ReplicationTableFrm.class.getResource("/view/images/remover.png")));
+//		btnRemover.setIcon(new ImageIcon(ReplicationTableFrm.class.getResource("/view/images/remover.png")));
 		btnRemover.setPreferredSize(new Dimension(40, 25));
 		btnRemover.setBackground(SystemColor.menu);
 		btnRemover.setBounds(216, 11, 114, 31);
@@ -100,6 +100,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 		getContentPane().add(lblProcesso);
 		
 		JCheckBox chckbxIgnorarErro = new JCheckBox("Ignorar Erro");
+		chckbxIgnorarErro.setEnabled(false);
 		chckbxIgnorarErro.setBounds(122, 230, 97, 23);
 		getContentPane().add(chckbxIgnorarErro);
 		
@@ -132,35 +133,35 @@ public class ReplicationTableFrm extends JInternalFrame {
 		lblSalvar.setBounds(68, 204, 44, 14);
 		getContentPane().add(lblSalvar);
 		
-		textField = new JTextField();
-		textField.setBounds(122, 78, 150, 20);
-		getContentPane().add(textField);
-		textField.setColumns(10);
+		txf_proccess = new JTextField();
+		txf_proccess.setBounds(122, 78, 150, 20);
+		getContentPane().add(txf_proccess);
+		txf_proccess.setColumns(10);
 		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(122, 103, 150, 20);
-		getContentPane().add(textField_1);
+		txf_order = new JTextField();
+		txf_order.setColumns(10);
+		txf_order.setBounds(122, 103, 150, 20);
+		getContentPane().add(txf_order);
 		
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBounds(122, 128, 320, 20);
-		getContentPane().add(textField_2);
+		txf_source_table = new JTextField();
+		txf_source_table.setColumns(10);
+		txf_source_table.setBounds(122, 128, 320, 20);
+		getContentPane().add(txf_source_table);
 		
-		textField_3 = new JTextField();
-		textField_3.setColumns(10);
-		textField_3.setBounds(122, 153, 150, 20);
-		getContentPane().add(textField_3);
+		txf_operation = new JTextField();
+		txf_operation.setColumns(10);
+		txf_operation.setBounds(122, 153, 150, 20);
+		getContentPane().add(txf_operation);
 		
-		textField_4 = new JTextField();
-		textField_4.setColumns(10);
-		textField_4.setBounds(122, 178, 320, 20);
-		getContentPane().add(textField_4);
+		txf_destiny_table = new JTextField();
+		txf_destiny_table.setColumns(10);
+		txf_destiny_table.setBounds(122, 178, 320, 20);
+		getContentPane().add(txf_destiny_table);
 		
-		textField_5 = new JTextField();
-		textField_5.setColumns(10);
-		textField_5.setBounds(122, 203, 150, 20);
-		getContentPane().add(textField_5);
+		txf_save = new JTextField();
+		txf_save.setColumns(10);
+		txf_save.setBounds(122, 203, 150, 20);
+		getContentPane().add(txf_save);
 		
 		lblColunaTipo = new JLabel("Coluna Tipo:");
 		lblColunaTipo.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -172,10 +173,10 @@ public class ReplicationTableFrm extends JInternalFrame {
 		lblColunaChave.setBounds(20, 290, 96, 14);
 		getContentPane().add(lblColunaChave);
 		
-		textField_6 = new JTextField();
-		textField_6.setColumns(10);
-		textField_6.setBounds(122, 289, 320, 20);
-		getContentPane().add(textField_6);
+		txf_key_column = new JTextField();
+		txf_key_column.setColumns(10);
+		txf_key_column.setBounds(122, 289, 320, 20);
+		getContentPane().add(txf_key_column);
 		
 		JComboBox comboBox = new JComboBox();
 		comboBox.setBounds(122, 313, 320, 22);
@@ -186,7 +187,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 //		PlanosDAO dao = new PlanosDAO(conn);
 //		String modalidade[];
 //		
-		Connection conn = ConnectionFactory.getConnection("master", "admin", "admin");
+		Connection conn = ConnectionFactory.getConnection("nextdb", "admin", "admin");
 
 //		// PlanosDAO pla = new PlanosDAO(conn);
 //
