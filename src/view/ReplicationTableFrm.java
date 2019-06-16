@@ -22,9 +22,13 @@ import javax.swing.JTextField;
 
 import database.ConnectionFactory;
 import database.TableReplicationDAO;
+import database.TableReplicationExecutionDAO;
+import model.TableReplicationExecution;
 import model.TbTableReplication;
 
 import javax.swing.JCheckBox;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 
@@ -49,6 +53,9 @@ public class ReplicationTableFrm extends JInternalFrame {
 	private JLabel lblColunaTipo;
 	private JLabel lblColunaChave;
 	private JTextField txf_key_column;
+	
+	Connection conn = ConnectionFactory.getConnection("nextdb", "admin", "admin");
+
 
 	/**
 	 * Launch the application.
@@ -135,10 +142,27 @@ public class ReplicationTableFrm extends JInternalFrame {
 		getContentPane().add(lblSalvar);
 		
 		txf_proccess = new JTextField();
+		txf_proccess.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				
+				
+				
+//				try {
+//					TableReplicationExecutionDAO table_rep_exec_DAO = new TableReplicationExecutionDAO(conn);
+//					TableReplicationExecution modelExecution = new TableReplicationExecution();
+//					table_rep_exec_DAO.Select(model);
+//				} catch (SQLException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+			}
+		});
 		txf_proccess.setToolTipText("");
 		txf_proccess.setBounds(122, 78, 150, 20);
 		getContentPane().add(txf_proccess);
 		txf_proccess.setColumns(10);
+		
 		
 		txf_order = new JTextField();
 		txf_order.setColumns(10);
@@ -189,7 +213,6 @@ public class ReplicationTableFrm extends JInternalFrame {
 
 		//	-------------Actions------------------------------------
 		
-		Connection conn = ConnectionFactory.getConnection("nextdb", "admin", "admin");
 
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {			
