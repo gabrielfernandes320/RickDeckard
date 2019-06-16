@@ -138,27 +138,42 @@ public class ReplicationFrm extends JInternalFrame {
 		JButton btnTestarConexo = new JButton("Testar Conexao");
 		btnTestarConexo.setBounds(328, 234, 114, 23);
 		getContentPane().add(btnTestarConexo);
-
 //		
-		Connection conn = ConnectionFactory.getConnection("master", "admin", "admin");
-		ConectionsReplicationDAO crd = null;
-		try {
-			crd = new ConectionsReplicationDAO(conn);
-		} catch (SQLException e1) {
-			
-			e1.printStackTrace();
-		}
-//		Connection dbURL = ConnectionFactory.getConnection(tbDBname.getText(), "admin", "admin");
+		fecharCampos();
+		btnSalvar.setEnabled(false);
+		
+		
+		
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ConectionReplication conrep = new ConectionReplication();
 				conrep.setConnectionAddress(tbIP.getText());
 				conrep.setConnectionName(tbDescription.getText());
-				conrep.setConnectionPort(tbPort.getText());
+				conrep.setConnectionPort(Integer.parseInt(tbPort.getText()));
 				conrep.setDatabaseSID(tbDBname.getText());
 				conrep.setDatabaseType((String) cbDBmodel.getSelectedItem());
 				conrep.setUser("gabriel");
-//				conrep.setDatabaseURL(dbURL.toString());
+				conrep.setDatabaseURL(getURL(tbIP.getText(), tbPort.getText(), tbDBname.getText()));
+				
+				Connection conn = ConnectionFactory.getConnection("nextdb", "admin", "admin");
+				ConectionsReplicationDAO crd = null;
+				try {
+					crd = new ConectionsReplicationDAO(conn);
+				} catch (SQLException e1) {
+					
+					e1.printStackTrace();
+				}
+				
+				try {
+					crd.Insert(conrep);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				esvaziarCampos();
+				btnRemover.setEnabled(true);
+				btnAdicionar.setEnabled(true);
+				
 				
 				
 			
@@ -169,11 +184,46 @@ public class ReplicationFrm extends JInternalFrame {
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				abrirCampos();
+				btnSalvar.setEnabled(true);
+				btnRemover.setEnabled(false);
+				btnAdicionar.setEnabled(false);
+				
 
 			}
 		});
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				
+				Connection conn = ConnectionFactory.getConnection("nextdb", "admin", "admin");
+				ConectionsReplicationDAO crd = null;
+				try {
+					crd = new ConectionsReplicationDAO(conn);
+				} catch (SQLException e1) {
+					
+					e1.printStackTrace();
+				}
+				
+				try {
+					crd.Select(c);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				ConectionReplication conrep = new ConectionReplication();
+				conrep.setConnectionAddress(tbIP.getText());
+				conrep.setConnectionName(tbDescription.getText());
+				conrep.setConnectionPort(Integer.parseInt(tbPort.getText()));
+				conrep.setDatabaseSID(tbDBname.getText());
+				conrep.setDatabaseType((String) cbDBmodel.getSelectedItem());
+				conrep.setUser("gabriel");
+				conrep.setDatabaseURL(getURL(tbIP.getText(), tbPort.getText(), tbDBname.getText()));
+			
+				btnRemover.setEnabled(true);
+				btnAdicionar.setEnabled(true);
+				
 				
 
 			}
@@ -185,12 +235,31 @@ public class ReplicationFrm extends JInternalFrame {
 		});
 	}
 
-
-	public void abrirCampos() {
+	public String getURL(String ip, String port, String dbName) {
+		String URL =  "jdbc:postgresql://"
+				+	ip
+				+	":"
+				+	port
+				+	"/"
+				+	dbName;
 		
+		
+		return URL;
+	}
+	
+	
+	public void abrirCampos() {
+		tbDBname.setEnabled(true);
+		tbDescription.setEnabled(true);
+		tbIP.setEnabled(true);
+		tbPort.setEnabled(true);
 	}
 
 	public void fecharCampos() {
+		tbDBname.setEnabled(false);
+		tbDescription.setEnabled(false);
+		tbIP.setEnabled(false);
+		tbPort.setEnabled(false);
 	}
 
 	public void abrirBotoes() {
@@ -202,7 +271,10 @@ public class ReplicationFrm extends JInternalFrame {
 	}
 
 	public void esvaziarCampos() {
-	
+		tbDBname.setText("");
+		tbDescription.setText("");
+		tbIP.setText("");
+		tbPort.setText("");
 	}
 
 	public void updateCampos() {

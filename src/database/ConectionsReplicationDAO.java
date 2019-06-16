@@ -6,12 +6,13 @@ import java.sql.SQLException;
 import java.util.List;
 import java.sql.Connection;
 import model.ConectionReplication;
+import model.Usuario;
 
 public class ConectionsReplicationDAO extends MasterDAO {
 
     private String is_select = "select codigo_replicacao,nome,endereco,porta,database,tipo_banco,url from TB_REPLICACAO where codigo_replicacao = ?";
 
-    private String is_insert = "INSERT INTO TB_REPLICACAO			"
+    private String is_insert = "INSERT INTO public.TB_REPLICACAO			"
             + "(usuario,nome," +
             "endereco," +
             "porta," +
@@ -55,7 +56,7 @@ public class ConectionsReplicationDAO extends MasterDAO {
             connRep.setReplicationCode(rst.getString("code"));
             connRep.setConnectionAddress(rst.getString("address"));
             connRep.setConnectionName(rst.getString("name"));
-            connRep.setConnectionPort(rst.getString("port"));
+            connRep.setConnectionPort(rst.getInt("port"));
             connRep.setDatabaseSID("dbSID");
 
             return connRep;
@@ -72,6 +73,21 @@ public class ConectionsReplicationDAO extends MasterDAO {
     @Override
     public void Insert(Object parameter) throws SQLException {
 
+		pst_insert.clearParameters();
+		
+		ConectionReplication lo_replication = (ConectionReplication)parameter;
+		
+		Set(pst_insert, 1, lo_replication.getUser());
+		Set(pst_insert, 2, lo_replication.getConnectionName());
+		Set(pst_insert, 3, lo_replication.getConnectionAddress());
+		Set(pst_insert, 4, lo_replication.getConnectionPort());
+		Set(pst_insert, 5, lo_replication.getDatabaseSID());
+		Set(pst_insert, 6, lo_replication.getDatabaseType());
+		Set(pst_insert, 7, lo_replication.getDatabaseURL());
+		
+		
+		pst_insert.execute();
+		
 
     }
 

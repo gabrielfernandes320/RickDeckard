@@ -10,7 +10,7 @@ public class ConectionReplication {
 
     private String ConnectionAddress;
 
-    private String ConnectionPort;
+    private int ConnectionPort;
 
     private String DatabaseSID;
 
@@ -18,7 +18,7 @@ public class ConectionReplication {
 
     private String DatabaseURL;
 
-    public ConectionReplication(String replicationCode, String user,String connectionName, String connectionAddress, String connectionPort, String databaseSID, String databaseType, String databaseURL) {
+    public ConectionReplication(String replicationCode, String user,String connectionName, String connectionAddress, int connectionPort, String databaseSID, String databaseType, String databaseURL) {
         ReplicationCode = replicationCode;
         User = user;
         ConnectionName = connectionName;
@@ -57,11 +57,11 @@ public class ConectionReplication {
         ConnectionAddress = connectionAddress;
     }
 
-    public String getConnectionPort() {
+    public int getConnectionPort() {
         return ConnectionPort;
     }
 
-    public void setConnectionPort(String connectionPort) {
+    public void setConnectionPort(int connectionPort) {
         ConnectionPort = connectionPort;
     }
 
