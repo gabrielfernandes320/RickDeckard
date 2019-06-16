@@ -157,7 +157,7 @@ public class PrincipalWindow extends JFrame {
         menuReplica = new JMenu("Replicacao");
 
         itemConnectionReplication = new JMenuItem("Conexoes");
-        itemReplicationTable = new JMenuItem("temp");
+        itemReplicationTable = new JMenuItem("Cadastro de tabelas");
         //icones dos itens
 
         //itemUsuariosSist.setIcon(new ImageIcon(PlansFrm.class.getResource("/view/images/aplicacao.png")));

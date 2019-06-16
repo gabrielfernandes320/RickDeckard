@@ -21,6 +21,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import database.ConnectionFactory;
+import database.TableReplicationDAO;
+import model.TbTableReplication;
+
 import javax.swing.JCheckBox;
 
 
@@ -70,25 +73,22 @@ public class ReplicationTableFrm extends JInternalFrame {
 		btnBuscar.setBounds(10, 11, 96, 31);
 		btnBuscar.setPreferredSize(new Dimension(40, 25));
 		btnBuscar.setBackground(new Color(240, 240, 240));
-//		btnBuscar.setIcon(new ImageIcon(ReplicationTableFrm.class.getResource("/view/images/localizar.png")));
 		getContentPane().add(btnBuscar);
 
 		btnAdicionar = new JButton("Adicionar");
-//		btnAdicionar.setIcon(new ImageIcon(ReplicationTableFrm.class.getResource("/view/images/adicionar.png")));
+		btnAdicionar.setEnabled(false);
 		btnAdicionar.setPreferredSize(new Dimension(40, 25));
 		btnAdicionar.setBackground(SystemColor.menu);
 		btnAdicionar.setBounds(104, 11, 114, 31);
 		getContentPane().add(btnAdicionar);
 
 		btnSalvar = new JButton("Salvar");
-//		btnSalvar.setIcon(new ImageIcon(ReplicationTableFrm.class.getResource("/view/images/salvar.png")));
 		btnSalvar.setPreferredSize(new Dimension(40, 25));
 		btnSalvar.setBackground(SystemColor.menu);
 		btnSalvar.setBounds(328, 11, 114, 31);
 		getContentPane().add(btnSalvar);
 
 		btnRemover = new JButton("Remover");
-//		btnRemover.setIcon(new ImageIcon(ReplicationTableFrm.class.getResource("/view/images/remover.png")));
 		btnRemover.setPreferredSize(new Dimension(40, 25));
 		btnRemover.setBackground(SystemColor.menu);
 		btnRemover.setBounds(216, 11, 114, 31);
@@ -105,6 +105,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 		getContentPane().add(chckbxIgnorarErro);
 		
 		JCheckBox chckbxHabilitarEdio = new JCheckBox("Habilitar Edi\u00E7\u00E3o");
+		chckbxHabilitarEdio.setEnabled(false);
 		chckbxHabilitarEdio.setBounds(122, 260, 114, 23);
 		getContentPane().add(chckbxHabilitarEdio);
 		
@@ -134,6 +135,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 		getContentPane().add(lblSalvar);
 		
 		txf_proccess = new JTextField();
+		txf_proccess.setToolTipText("");
 		txf_proccess.setBounds(122, 78, 150, 20);
 		getContentPane().add(txf_proccess);
 		txf_proccess.setColumns(10);
@@ -149,6 +151,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 		getContentPane().add(txf_source_table);
 		
 		txf_operation = new JTextField();
+		txf_operation.setEnabled(false);
 		txf_operation.setColumns(10);
 		txf_operation.setBounds(122, 153, 150, 20);
 		getContentPane().add(txf_operation);
@@ -159,6 +162,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 		getContentPane().add(txf_destiny_table);
 		
 		txf_save = new JTextField();
+		txf_save.setEnabled(false);
 		txf_save.setColumns(10);
 		txf_save.setBounds(122, 203, 150, 20);
 		getContentPane().add(txf_save);
@@ -179,41 +183,45 @@ public class ReplicationTableFrm extends JInternalFrame {
 		getContentPane().add(txf_key_column);
 		
 		JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"--------------------------------- Selecione--------------------------", "int", "String"}));
 		comboBox.setBounds(122, 313, 320, 22);
 		getContentPane().add(comboBox);
 
-		// tem que colocar as modalidades dentro do JComboBox
-//		Connection conn = ConnectionFactory.getConnection("master", "admin", "admin");
-//		PlanosDAO dao = new PlanosDAO(conn);
-//		String modalidade[];
-//		
+		//	-------------Actions------------------------------------
+		
 		Connection conn = ConnectionFactory.getConnection("nextdb", "admin", "admin");
 
-//		// PlanosDAO pla = new PlanosDAO(conn);
-//
-//		ModalidadesDAO mod;
-//
-//		try {
-//			mod = new ModalidadesDAO(conn);
-//			modalidades = mod.SelectAllModalidade();
-//		} catch (SQLException e2) {
-//			// TODO Auto-generated catch block
-//			e2.printStackTrace();
-//		}
-
 		btnSalvar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
+			public void actionPerformed(ActionEvent e) {			
+				if( (txf_proccess.getText()).isEmpty() || (txf_order.getText()).isEmpty()||
+					(txf_source_table.getText()).isEmpty() || (txf_destiny_table.getText()).isEmpty()||
+					(txf_key_column.getText()).isEmpty()) {
+					JOptionPane.showMessageDialog(null,"Todos os campos devem ser preenchidos");
+				}else {
+					
+					try {
+						conn.setAutoCommit(false);
+						System.out.println("Conectado com sucesso!");
+						
+						TableReplicationDAO tableReplicationDAO = new TableReplicationDAO(conn);
+						TbTableReplication model = new TbTableReplication( "admin",txf_proccess.getText(),
+								Integer.parseInt(txf_order.getText()), txf_source_table.getText(),
+								txf_destiny_table.getText(),comboBox.getSelectedItem().toString(),txf_key_column.getText());
+						
+						tableReplicationDAO.Insert(model);
+						
+						
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				}
+			
 				
 			}
 		});
 
-		btnAdicionar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-
-			}
-		});
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -222,24 +230,24 @@ public class ReplicationTableFrm extends JInternalFrame {
 		});
 		btnRemover.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				try {
+					conn.setAutoCommit(false);
+					System.out.println("Conectado com sucesso!");
+					
+					TableReplicationDAO tableReplicationDAO = new TableReplicationDAO(conn);
+					TbTableReplication model = new TbTableReplication();
+					model.setProcesso(txf_proccess.getText());
+					model.setOrdem(Integer.parseInt(txf_order.getText()));
+					tableReplicationDAO.Delete(tableReplicationDAO.Select(model));
+					
+					
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 	}
-
-//	public void Update(final Plano p) {
-//
-//		txfPlano.setText(p.getPlano());
-//		txfValor.setText("" + p.getValor());
-//		cbxModalidade.setSelectedItem(p.getModalidade());
-//		abrirBotoes();
-//		updateCampos();
-//		IsUpdate = true;
-//
-////	while()
-////	cbxModalidade.setSelectedIndex();
-////		
-//	}
 
 	public void abrirCampos() {
 		

@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-public class TableReplicationProcess extends MasterDAO {
+public class TableReplicationProcessDAO extends MasterDAO {
 	
 	private String is_selectAll = "select * from tb_replicacao_processo";
 	private String is_select = "select * from tb_replicacao_processo where codigo_processo = ? order by codigo_processo";
@@ -39,7 +39,7 @@ public class TableReplicationProcess extends MasterDAO {
 	
 	Connection io_connection;
 	
-	public TableReplicationProcess(Connection connection) throws SQLException {
+	public TableReplicationProcessDAO(Connection connection) throws SQLException {
 		io_connection = connection;
 		pst_selectAll = connection.prepareStatement(is_selectAll);
 		pst_select = connection.prepareStatement(is_select);
