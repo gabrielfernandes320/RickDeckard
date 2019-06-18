@@ -83,4 +83,31 @@ public class		ConnectionFactory {
 		}
 
 	}
+	public	static
+	Connection		getConnectionTest
+				(
+				
+					String			as_url,
+					
+					String			as_user,
+					String			as_pass
+				)
+	{
+		try
+		{
+			return	DriverManager.getConnection
+				(
+					as_url,
+					as_user,
+					as_pass
+				);
+		}
+		catch (SQLException	e)
+		{
+			throw	new RuntimeException(e);
+		}
+
+	}
+	
+	
 }

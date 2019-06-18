@@ -136,10 +136,21 @@ public class ReplicationFrm extends JInternalFrame {
 		getContentPane().add(cbDBmodel);
 		
 		JButton btnTestarConexo = new JButton("Testar Conexao");
+		btnTestarConexo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Connection conn = ConnectionFactory.getConnection(tbIP.getText(), tbPort.getText(), tbDBname.getText(), "admin", "admin");
+					JOptionPane.showMessageDialog(null,"Conectado com sucesso!");
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(null,"Erro na conexao!");
+				}
+				
+			}
+		});
 		btnTestarConexo.setBounds(328, 234, 114, 23);
 		getContentPane().add(btnTestarConexo);
 //		
-		fecharCampos();
+	
 		btnSalvar.setEnabled(false);
 		
 		
@@ -166,8 +177,9 @@ public class ReplicationFrm extends JInternalFrame {
 				
 				try {
 					crd.Insert(conrep);
+					JOptionPane.showMessageDialog(null,"Salvo com sucesso!");
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null,"Erro ao salvar!");
 					e1.printStackTrace();
 				}
 				esvaziarCampos();
@@ -184,7 +196,7 @@ public class ReplicationFrm extends JInternalFrame {
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				abrirCampos();
+				
 				btnSalvar.setEnabled(true);
 				btnRemover.setEnabled(false);
 				btnAdicionar.setEnabled(false);
@@ -194,7 +206,12 @@ public class ReplicationFrm extends JInternalFrame {
 		});
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				if (tbDescription.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null,"Campo vazio!");
+				}
+				else {
+				ConectionReplication conrep = new ConectionReplication();
+				conrep.setConnectionName(tbDescription.getText());
 				
 				Connection conn = ConnectionFactory.getConnection("nextdb", "admin", "admin");
 				ConectionsReplicationDAO crd = null;
@@ -206,20 +223,15 @@ public class ReplicationFrm extends JInternalFrame {
 				}
 				
 				try {
-					crd.Select(c);
+					conrep = (ConectionReplication) crd.Select(conrep);
+					tbDBname.setText(conrep.getDatabaseSID());
+					tbIP.setText(conrep.getConnectionAddress());
+					tbPort.setText(Integer.toString(conrep.getConnectionPort()));
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				
-				ConectionReplication conrep = new ConectionReplication();
-				conrep.setConnectionAddress(tbIP.getText());
-				conrep.setConnectionName(tbDescription.getText());
-				conrep.setConnectionPort(Integer.parseInt(tbPort.getText()));
-				conrep.setDatabaseSID(tbDBname.getText());
-				conrep.setDatabaseType((String) cbDBmodel.getSelectedItem());
-				conrep.setUser("gabriel");
-				conrep.setDatabaseURL(getURL(tbIP.getText(), tbPort.getText(), tbDBname.getText()));
 			
 				btnRemover.setEnabled(true);
 				btnAdicionar.setEnabled(true);
@@ -227,9 +239,32 @@ public class ReplicationFrm extends JInternalFrame {
 				
 
 			}
+			}
 		});
 		btnRemover.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				ConectionReplication conrep = new ConectionReplication();
+				conrep.setConnectionName(tbDescription.getText());
+				
+				Connection conn = ConnectionFactory.getConnection("nextdb", "admin", "admin");
+				ConectionsReplicationDAO crd = null;
+				try {
+					crd = new ConectionsReplicationDAO(conn);
+				} catch (SQLException e1) {
+					
+					e1.printStackTrace();
+				}
+				
+				try {
+					crd.Delete(conrep);
+					JOptionPane.showMessageDialog(null,"Apagado com sucesso!");
+					esvaziarCampos();
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(null,"Erro ao apagar!");
+					e1.printStackTrace();
+				}
+				esvaziarCampos();
 				
 			}
 		});
@@ -257,7 +292,7 @@ public class ReplicationFrm extends JInternalFrame {
 
 	public void fecharCampos() {
 		tbDBname.setEnabled(false);
-		tbDescription.setEnabled(false);
+		//tbDescription.setEnabled(false);
 		tbIP.setEnabled(false);
 		tbPort.setEnabled(false);
 	}

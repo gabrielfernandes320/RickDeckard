@@ -10,7 +10,7 @@ import model.Usuario;
 
 public class ConectionsReplicationDAO extends MasterDAO {
 
-    private String is_select = "select codigo_replicacao,nome,endereco,porta,database,tipo_banco,url from TB_REPLICACAO where codigo_replicacao = ?";
+    private String is_select = "select codigo_replicacao,nome,endereco,porta,database from TB_REPLICACAO where nome = ?";
 
     private String is_insert = "INSERT INTO public.TB_REPLICACAO			"
             + "(usuario,nome," +
@@ -21,9 +21,13 @@ public class ConectionsReplicationDAO extends MasterDAO {
             "url)" +
             "VALUES(" +
             "?,?,?,?,?,?,?) ";
+    
+    private String is_delete = "DELETE FROM public.tb_replicacao WHERE nome = '1?' ";
 
     private PreparedStatement pst_select;
     private PreparedStatement pst_insert;
+    private PreparedStatement pst_delete;
+    
 
     Connection io_connection;
 
@@ -47,17 +51,21 @@ public class ConectionsReplicationDAO extends MasterDAO {
         ConectionReplication connRep = null;
 
         // Seta os parametros.
+        
         Set(pst_select, 1, ((ConectionReplication) parameter).getConnectionName());
 
+      //is_select.replace("1?", ((ConectionReplication) parameter).getConnectionName());
+      //pst_select = io_connection.prepareStatement(is_select);
         ResultSet rst = pst_select.executeQuery();
 
         if (rst.next()) {
             connRep = new ConectionReplication();
-            connRep.setReplicationCode(rst.getString("code"));
-            connRep.setConnectionAddress(rst.getString("address"));
-            connRep.setConnectionName(rst.getString("name"));
-            connRep.setConnectionPort(rst.getInt("port"));
-            connRep.setDatabaseSID("dbSID");
+       
+            connRep.setReplicationCode(rst.getString("codigo_replicacao"));
+            connRep.setConnectionName(rst.getString("nome"));
+            connRep.setConnectionAddress(rst.getString("endereco"));
+            connRep.setConnectionPort(rst.getInt("porta"));
+            connRep.setDatabaseSID("database");
 
             return connRep;
 
@@ -93,6 +101,12 @@ public class ConectionsReplicationDAO extends MasterDAO {
 
     @Override
     public int Delete(Object parameter) throws SQLException {
-        return 0;
+    	int af;
+    	ConectionReplication lo_replication = ((ConectionReplication)parameter);
+		//pst_delete.setString(1, lo_usuario.getUsuario());
+		is_delete = is_delete.replace("1?", lo_replication.getConnectionName());
+		pst_delete = io_connection.prepareStatement(is_delete);
+		af = pst_delete.executeUpdate();
+		return af;
     }
 }
