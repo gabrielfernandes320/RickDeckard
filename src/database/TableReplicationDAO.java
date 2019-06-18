@@ -16,8 +16,6 @@ public class TableReplicationDAO extends MasterDAO {
 	private String is_select = "select * from tb_replicacao_tabela where processo like ?, ordem like ? ";
 	private String is_insert = "INSERT INTO tb_replicacao_tabela			"
 								+ "(							"
-								+ "	codigo_replicacao,			"
-								+ "	data_atual,					"
 								+ "	usuario,					"
 								+ " processo,					"
 								+ " ordem,						"
@@ -25,16 +23,11 @@ public class TableReplicationDAO extends MasterDAO {
 								+ " tabela_destino,				"
 								+ " coluna_tipo,				"
 								+ " coluna_chave,				"
-								+ " operacao,					"
-								+ " linhas_maximo,				"
-								+ " erro_ignorar,				"
-								+ " habilitado,					"
+								+ "linhas_maximo				"
 								+ ")							"
 								+ "VALUES						"
 								+ "(							"
-								+ " default,					"
-								+ " default,"
-								+ "?,?,?,?,?,?,?,?,99999999,?,?"
+								+ "?,?,?,?,?,?,?,999999999"
 								+ ") ";
 
 	
@@ -103,11 +96,11 @@ public class TableReplicationDAO extends MasterDAO {
 		
 		Set(pst_insert, 1, lo_tableReptab.getUsuario());
 		Set(pst_insert, 2, lo_tableReptab.getProcesso());
-		Set(pst_insert, 2, lo_tableReptab.getOrdem());
-		Set(pst_insert, 2, lo_tableReptab.getTabela_origem());
-		Set(pst_insert, 2, lo_tableReptab.getTabela_destino());
-		Set(pst_insert, 2, lo_tableReptab.getColuna_tipo());
-		Set(pst_insert, 2, lo_tableReptab.getColuna_chave());
+		Set(pst_insert, 3, lo_tableReptab.getOrdem());
+		Set(pst_insert, 4, lo_tableReptab.getTabela_origem());
+		Set(pst_insert, 5, lo_tableReptab.getTabela_destino());
+		Set(pst_insert, 6, lo_tableReptab.getColuna_tipo());
+		Set(pst_insert, 7, lo_tableReptab.getColuna_chave());
 		pst_insert.execute();
 		
 		if (pst_insert.getUpdateCount() > 0) {

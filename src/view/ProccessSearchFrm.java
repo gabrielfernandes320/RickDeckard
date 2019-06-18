@@ -15,10 +15,13 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import database.ConnectionFactory;
+import database.TableReplicationDAO;
 import database.TableReplicationExecutionDAO;
+import database.TableReplicationProcessDAO;
 import model.Graduacoes;
 import model.Modalidades;
 import model.Plano;
+import model.TbTableReplication;
 import tableModel.ProccessSearchTable;
 
 import java.awt.event.ActionListener;
@@ -36,7 +39,7 @@ public class ProccessSearchFrm extends JDialog {
 	private JTable table;
 	private ProccessSearchTable model;
 	private String idSelecionado;
-	Connection conn = ConnectionFactory.getConnection("master", "admin", "admin");
+	Connection conn = ConnectionFactory.getConnection("nextdb", "admin", "admin");
 	private static ReplicationTableFrm window;
 	private JTextField txfSearch;
 
@@ -113,10 +116,10 @@ public class ProccessSearchFrm extends JDialog {
 		     public void mouseClicked(MouseEvent e){
 		         if (e.getClickCount() == 2){
 		            System.out.println(" double click" );
-		            
-//		            Modalidades p = new Modalidades();
+		             TbTableReplication t = new TbTableReplication();
 //		            List<Graduacoes> graduationList = new ArrayList<>();
-//		            p.setModalidade(tabela.getValueAt(tabela.getSelectedRow(), 0).toString());
+		            t.setProcesso(tabela.getValueAt(tabela.getSelectedRow(), 0).toString());
+//		             p.setModalidade(tabela.getValueAt(tabela.getSelectedRow(), 0).toString());
 //		            try {
 //						GraduacoesDAO graduationDAO = new GraduacoesDAO(conn);
 //						graduationList = graduationDAO.SelectAll(p.getModalidade().toString());
@@ -125,8 +128,8 @@ public class ProccessSearchFrm extends JDialog {
 //						e1.printStackTrace();
 //					}
 //		            
-//		            window.Update(p,graduationList);
-//		           	dispose();
+		            window.Update(t);
+		           	dispose();
 //		           	
 		            }
 		         }
@@ -137,7 +140,7 @@ public class ProccessSearchFrm extends JDialog {
 				zerarTodos();
 				try {
 					
-//					model.addListaDeProcessos(new TableReplicationExecutionDAO(conn).SelectAll(txfSearch.getText().toString()));
+					model.addListaDeProcessos(new TableReplicationProcessDAO(conn).SelectAll(txfSearch.getText().toString()));
 				
 				} catch (Exception e1) {
 					System.err.printf("Erro: %s.\n", e1.getMessage());

@@ -15,10 +15,14 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.text.MaskFormatter;
+
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
 import database.ConnectionFactory;
 import database.TableReplicationDAO;
@@ -45,7 +49,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 	private JLabel lblTabelaDestino;
 	private JLabel lblSalvar;
 	private JTextField txf_proccess;
-	private JTextField txf_order;
+	private JFormattedTextField txf_order;
 	private JTextField txf_source_table;
 	private JTextField txf_operation;
 	private JTextField txf_destiny_table;
@@ -142,20 +146,15 @@ public class ReplicationTableFrm extends JInternalFrame {
 		getContentPane().add(lblSalvar);
 		
 		txf_proccess = new JTextField();
+		txf_proccess.setText("Clique...");
+		txf_proccess.setEditable(false);
 		txf_proccess.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				
+				ProccessSearchFrm proccess_search_frm = new ProccessSearchFrm(ReplicationTableFrm.this);
+				proccess_search_frm.setVisible(true);
 				
-				
-//				try {
-//					TableReplicationExecutionDAO table_rep_exec_DAO = new TableReplicationExecutionDAO(conn);
-//					TableReplicationExecution modelExecution = new TableReplicationExecution();
-//					table_rep_exec_DAO.Select(model);
-//				} catch (SQLException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
 			}
 		});
 		txf_proccess.setToolTipText("");
@@ -163,8 +162,13 @@ public class ReplicationTableFrm extends JInternalFrame {
 		getContentPane().add(txf_proccess);
 		txf_proccess.setColumns(10);
 		
-		
-		txf_order = new JTextField();
+		try {
+			txf_order = new JFormattedTextField(maskFormatter("#######"));
+			
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		txf_order.setColumns(10);
 		txf_order.setBounds(122, 103, 150, 20);
 		getContentPane().add(txf_order);
@@ -233,6 +237,12 @@ public class ReplicationTableFrm extends JInternalFrame {
 						
 						tableReplicationDAO.Insert(model);
 						
+						txf_proccess.setText("click...");
+						txf_order.setText("");
+						txf_source_table.setText("");
+						txf_destiny_table.setText("");
+						txf_key_column.setText("");
+						comboBox.setSelectedIndex(0);
 						
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
@@ -248,7 +258,8 @@ public class ReplicationTableFrm extends JInternalFrame {
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-
+				
+				
 			}
 		});
 		btnRemover.addActionListener(new ActionListener() {
@@ -290,9 +301,20 @@ public class ReplicationTableFrm extends JInternalFrame {
 	public void esvaziarCampos() {
 	
 	}
-
-	public void updateCampos() {
+	
+	public MaskFormatter maskFormatter(String format) throws ParseException {
+		try {
+			return (new MaskFormatter(format));
+		} catch (java.text.ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 		
+	}
+
+	public void Update(TbTableReplication t) {
+		txf_proccess.setText(t.getProcesso());
 	}
 	public void setPosicao() {
 		Dimension d = this.getDesktopPane().getSize();

@@ -12,6 +12,7 @@ import javax.xml.ws.Service.Mode;
 import com.sun.media.sound.ModelAbstractChannelMixer;
 
 import model.Graduacoes;
+import model.Modalidades;
 import model.TableReplicationExecution;
 
 public class TableReplicationExecutionDAO extends MasterDAO {
@@ -62,7 +63,8 @@ public class TableReplicationExecutionDAO extends MasterDAO {
 		pst_insert = connection.prepareStatement(is_insert);
 		pst_update = connection.prepareStatement(is_update);
 	}
-
+	
+	
 	@Override
 	public List<Object> SelectAll() throws SQLException {
 	
