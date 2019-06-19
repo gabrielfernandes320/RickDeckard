@@ -58,6 +58,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 	private JLabel lblColunaChave;
 	private JTextField txf_key_column;
 	private JComboBox comboBox;
+	private boolean isUpdate = false;
 	
 	Connection conn = ConnectionFactory.getConnection("nextdb", "admin", "admin");
 
@@ -227,30 +228,55 @@ public class ReplicationTableFrm extends JInternalFrame {
 					(comboBox.getSelectedItem()) == "--------------------------------- Selecione--------------------------") {
 					JOptionPane.showMessageDialog(null,"Todos os campos devem ser preenchidos");
 				}else {
-					
-					try {
-						conn.setAutoCommit(false);
-						System.out.println("Conectado com sucesso!");
-						
-						TableReplicationDAO tableReplicationDAO = new TableReplicationDAO(conn);
-						TbTableReplication model = new TbTableReplication( "admin",txf_proccess.getText(),
-								Integer.parseInt(txf_order.getText()), txf_source_table.getText(),
-								txf_destiny_table.getText(),comboBox.getSelectedItem().toString(),txf_key_column.getText());
-						
-						tableReplicationDAO.Insert(model);
-						
-						txf_proccess.setText("clique...");
-						txf_order.setText("");
-						txf_source_table.setText("");
-						txf_destiny_table.setText("");
-						txf_key_column.setText("");
-						comboBox.setSelectedIndex(0);
-						
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+					if(!isUpdate) {
+						try {
+							conn.setAutoCommit(false);
+							System.out.println("Conectado com sucesso!");
+							
+							TableReplicationDAO tableReplicationDAO = new TableReplicationDAO(conn);
+							TbTableReplication model = new TbTableReplication( "admin",txf_proccess.getText(),
+									Integer.parseInt(txf_order.getText()), txf_source_table.getText(),
+									txf_destiny_table.getText(),comboBox.getSelectedItem().toString(),txf_key_column.getText());
+							
+							tableReplicationDAO.Insert(model);
+							
+							txf_proccess.setText("clique...");
+							txf_order.setText("");
+							txf_source_table.setText("");
+							txf_destiny_table.setText("");
+							txf_key_column.setText("");
+							comboBox.setSelectedIndex(0);
+							
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}else {
+						try {
+							conn.setAutoCommit(false);
+							System.out.println("Conectado com sucesso!");
+							
+							TableReplicationDAO tableReplicationDAO = new TableReplicationDAO(conn);
+							TbTableReplication model =  new TbTableReplication( "admin",txf_proccess.getText(),
+							Integer.parseInt(txf_order.getText()), txf_source_table.getText(),
+							txf_destiny_table.getText(),comboBox.getSelectedItem().toString(),txf_key_column.getText());
+							
+							TbTableReplication temp = (TbTableReplication) tableReplicationDAO.select(model);
+							model.setCodigo_replicacao(temp.getCodigo_replicacao());
+							tableReplicationDAO.Update(model);
+							
+							txf_proccess.setText("clique...");
+							txf_order.setText("");
+							txf_source_table.setText("");
+							txf_destiny_table.setText("");
+							txf_key_column.setText("");
+							comboBox.setSelectedIndex(0);
+							isUpdate = false;
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					}
-					
 				}
 			
 				
@@ -262,7 +288,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 				TableSearchFrm table_rep_search_frm = new TableSearchFrm(ReplicationTableFrm.this);
 				table_rep_search_frm.setVisible(true);
 				btnAdicionar.setEnabled(false);
-				
+				isUpdate = true;
 			}
 		});
 		btnRemover.addActionListener(new ActionListener() {
@@ -284,7 +310,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 					txf_key_column.setText("");
 					comboBox.setSelectedIndex(0);
 					btnAdicionar.setEnabled(true);
-					
+					isUpdate = false;
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

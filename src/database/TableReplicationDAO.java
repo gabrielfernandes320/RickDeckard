@@ -35,7 +35,14 @@ public class TableReplicationDAO extends MasterDAO {
 								+ ") ";
 
 	
-	private String is_update = "";
+	private String is_update = " UPDATE tb_replicacao_tabela"
+							+ "SET processo =?,			"
+							+ " ordem =?,				"
+							+ " tabela_origem =?,		"
+							+ " tabela_destino =?,		"
+							+ " coluna_tipo =?,			"
+							+ " coluna_chave =? 		"
+							+ "where codigo_replicacao =?	";
 	
 	private String is_delete = "DELETE FROM tb_replicacao_tabela WHERE codigo_replicacao = ?";
 	
@@ -124,8 +131,23 @@ public Object select(Object parameter) throws SQLException {
 
 	@Override
 	public void Update(Object parameter) throws SQLException {
-		// TODO Auto-generated method stub
+		pst_update.clearParameters();
 		
+		TbTableReplication lo_tableReptab = (TbTableReplication)parameter;
+		
+		Set(pst_update, 1, lo_tableReptab.getProcesso());
+		Set(pst_update, 2, lo_tableReptab.getOrdem());
+		Set(pst_update, 3, lo_tableReptab.getTabela_origem());
+		Set(pst_update, 4, lo_tableReptab.getTabela_destino());
+		Set(pst_update, 5, lo_tableReptab.getColuna_tipo());
+		Set(pst_update, 6, lo_tableReptab.getColuna_chave());
+		pst_update.setInt(7, lo_tableReptab.getCodigo_replicacao());
+		
+		pst_update.execute();
+		
+		if (pst_update.getUpdateCount() > 0) {
+			io_connection.commit();
+		}
 	}
 
 	@Override
