@@ -4,11 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import model.TableReplication;
 import model.TableReplicationExecution;
 import model.TbTableReplication;
+import model.Usuario;
 
 public class TableReplicationDAO extends MasterDAO {
 	
@@ -52,33 +54,23 @@ public class TableReplicationDAO extends MasterDAO {
 	}
 
 
-	@Override
-	public List<Object> SelectAll() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object Select(Object parameter) throws SQLException {
-	
-		TbTableReplication tableReptab = (TbTableReplication)parameter;;
+	public TbTableReplication Select(String parameter, int order) throws SQLException {
 		
-		Set(pst_select, 1, ((TbTableReplication)parameter).getProcesso());
-		Set(pst_select, 2, ((TbTableReplication)parameter).getOrdem());
+		TbTableReplication model = new TbTableReplication();
 		
+		pst_select.setString(1, parameter);
+		pst_select.setInt(2, order);
+			
 		ResultSet rst = pst_select.executeQuery();
-		if(rst.next()) {
-			tableReptab = new TbTableReplication();
-			tableReptab.setCodigo_replicacao(rst.getInt("coluna_replicacao"));
-			tableReptab.setProcesso(rst.getString("processo"));
-			tableReptab.setOrdem(rst.getInt("ordem"));
-			tableReptab.setTabela_origem(rst.getString("tabela_origem"));
-			tableReptab.setTabela_destino(rst.getString("tabela_destino"));
-			tableReptab.setColuna_chave(rst.getString("coluna_chave"));
-			tableReptab.setColuna_tipo(rst.getString("coluna_tipo"));
+		
+		while (rst.next()) {
+			
+			model.setOrdem(rst.getInt("ordem"));
+			model.setTabela_destino(rst.getString("tabela_destino"));
+			
 		}
-		return tableReptab;
-
+		
+		return model;
 	}
 
 	@Override
@@ -124,6 +116,19 @@ public class TableReplicationDAO extends MasterDAO {
         return affectedrows;
 
 
+	}
+
+
+	@Override
+	public List<Object> SelectAll() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object Select(Object parameter) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

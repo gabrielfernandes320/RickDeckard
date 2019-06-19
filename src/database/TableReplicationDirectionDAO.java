@@ -10,7 +10,11 @@ import model.ConectionReplication;
 
 public class TableReplicationDirectionDAO extends MasterDAO {
 
-    private String is_select = "select * from tb_replicacao_direcao where nome = ?";
+    private String is_select = "select database_origem, database_destino from tb_replicacao_direcao where nome = ?";
+    
+    private String is_selectOrigem = "select database_origem from tb_replicacao_direcao where nome = ?";
+    
+    private String is_selectDestino = "select database_destino from tb_replicacao_direcao where nome = ?";
     
     private String is_selectDirectionNames = "select codigo_direcao from tb_replicacao_direcao where processo = ?";
 
@@ -30,6 +34,8 @@ public class TableReplicationDirectionDAO extends MasterDAO {
     private PreparedStatement pst_selectDirectionNames;
     private PreparedStatement pst_insert;
     private PreparedStatement pst_delete;
+    private PreparedStatement pst_selectOrigem;
+    private PreparedStatement pst_selectDestino;
     
 
     Connection io_connection;
@@ -40,8 +46,8 @@ public class TableReplicationDirectionDAO extends MasterDAO {
         pst_select = connection.prepareStatement(is_select);
         pst_insert = connection.prepareStatement(is_insert);
         pst_selectDirectionNames = connection.prepareStatement(is_selectDirectionNames);
-        //pst_drop_role = connection.prepareStatement(is_drop_role);
-        //pst_delete = connection.prepareStatement(is_delete);
+        pst_selectOrigem = connection.prepareStatement(is_selectOrigem);
+        pst_selectDestino = connection.prepareStatement(is_selectDestino);
     }
 
 
@@ -50,31 +56,24 @@ public class TableReplicationDirectionDAO extends MasterDAO {
         return null;
     }
 
-    @Override
-    public Object Select(Object parameter) throws SQLException {
-        ConectionReplication connRep = null;
-
-        // Seta os parametros.
-        
-        Set(pst_select, 1, ((ConectionReplication) parameter).getConnectionName());
-
-      //is_select.replace("1?", ((ConectionReplication) parameter).getConnectionName());
-      //pst_select = io_connection.prepareStatement(is_select);
-        ResultSet rst = pst_select.executeQuery();
-
-        if (rst.next()) {
-            connRep = new ConectionReplication();
-       
-            connRep.setReplicationCode(rst.getString("codigo_replicacao"));
-            connRep.setConnectionName(rst.getString("nome"));
-            connRep.setConnectionAddress(rst.getString("endereco"));
-            connRep.setConnectionPort(rst.getInt("porta"));
-            connRep.setDatabaseSID("database");
-
-            return connRep;
-
-        }
-        return null;
+    public String[] Select(String nome) throws SQLException {
+    	
+		pst_selectDirectionNames.setString(1, nome);
+		
+		ResultSet rst = pst_selectDirectionNames.executeQuery();	
+		ArrayList<String> list = new ArrayList<String>();
+		
+		list.add("");
+		
+		while (rst.next()) {
+			
+			list.add (rst.getString ("codigo_direcao"));
+			
+		}
+		
+		String[] Direction = (String[]) list.toArray (new String[list.size()]);
+		
+		return Direction;
     }
 
 	public String[] selectDirectionNames(String processo) throws SQLException {
@@ -98,6 +97,30 @@ public class TableReplicationDirectionDAO extends MasterDAO {
 		
 	}
     
+	public String selectOrigem(String nome) throws SQLException {
+		
+		pst_selectOrigem.setString(1, nome);
+		
+		ResultSet rst = pst_selectOrigem.executeQuery();	
+		
+		String origem = rst.getString ("database_origem");
+		
+		return origem;
+		
+	}
+	
+	public String selectDestino(String nome) throws SQLException {
+		
+		pst_selectDestino.setString(1, nome);
+		
+		ResultSet rst = pst_selectDestino.executeQuery();	
+		
+		String destino = rst.getString ("database_destino");
+		
+		return destino;
+		
+	}
+			
     @Override
     public void Update(Object parameter) throws SQLException {
 
@@ -134,4 +157,11 @@ public class TableReplicationDirectionDAO extends MasterDAO {
 		af = pst_delete.executeUpdate();
 		return af;
     }
+
+
+	@Override
+	public Object Select(Object parameter) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

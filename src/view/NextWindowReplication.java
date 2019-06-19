@@ -23,15 +23,15 @@ import javax.swing.DefaultComboBoxModel;
 
 public class NextWindowReplication<E> extends JInternalFrame implements NextWindowController {
 
-	private JTextField txfDirecaoOrigem;
-	private JTextField txfDirecaoDestino;
+	private JLabel origemLbl;
+	private JLabel destinoLbl;
+	private JLabel pointerLbl;
 	private JTextField txfProcesso;
 	private JTextField txfTabela;
 	private JTextField txfTabelas;
 	private JTextField txfErros;
 	private JComboBox<E> processCmb;
 	private JComboBox<E> directionCmb;
-	private JComboBox<E> conectionCmb;
 	private JProgressBar pbbPrincipal;
 	private JProgressBar pbbIndeterminada;
 	private JButton btnReplicar;
@@ -64,7 +64,7 @@ public class NextWindowReplication<E> extends JInternalFrame implements NextWind
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setBackground(Color.WHITE);
 
-		setLocation(1,1);
+		setLocation(1, 1);
 		getContentPane().setLayout(null);
 		// Cria os componentes.
 
@@ -75,7 +75,13 @@ public class NextWindowReplication<E> extends JInternalFrame implements NextWind
 
 				if (btnReplicar.getText().equals("REPLICAR")) {
 
-					NextReplicationExecute replication = new NextReplicationExecute(NextWindowReplication.this);
+					NextReplicationExecute replication = null;
+					try {
+						replication = new NextReplicationExecute(NextWindowReplication.this);
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					replication.ReplicacaoIniciar();
 
 				}
@@ -92,50 +98,43 @@ public class NextWindowReplication<E> extends JInternalFrame implements NextWind
 		progressBar.setStringPainted(true);
 		getContentPane().add(progressBar);
 
-		JLabel lblNewLabel = new JLabel("Conex\u00E3o:");
-		lblNewLabel.setBounds(84, 85, 96, 17);
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		getContentPane().add(lblNewLabel);
-
 		Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
 
-		conectionCmb = new JComboBox();
-		conectionCmb.setBounds(156, 85, 120, 20);
-		conectionCmb.setModel(new DefaultComboBoxModel(loadConectionsComboBox()));
-		getContentPane().add(conectionCmb);
-
 		JLabel lblProcesso = new JLabel("Processo:");
-		lblProcesso.setBounds(84, 113, 96, 17);
+		lblProcesso.setBounds(10, 11, 96, 17);
 		lblProcesso.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		getContentPane().add(lblProcesso);
 
 		processCmb = new JComboBox();
-		processCmb.setBounds(156, 113, 120, 20);
+		processCmb.setBounds(82, 11, 120, 20);
 		processCmb.setModel(new DefaultComboBoxModel(loadProcessComboBox()));
 		getContentPane().add(processCmb);
 
 		JLabel lblDireo = new JLabel("Dire\u00E7\u00E3o:");
-		lblDireo.setBounds(84, 141, 96, 17);
+		lblDireo.setBounds(10, 39, 96, 17);
 		lblDireo.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		getContentPane().add(lblDireo);
 
 		directionCmb = new JComboBox();
-		directionCmb.setBounds(156, 141, 120, 20);
+		directionCmb.setBounds(82, 39, 120, 20);
 		directionCmb.setModel(new DefaultComboBoxModel(loadDirectionsComboBox()));
 		getContentPane().add(directionCmb);
 
+		origemLbl = new JLabel("");
+		origemLbl.setBounds(212, 42, 64, 14);
+		getContentPane().add(origemLbl);
+
+		destinoLbl = new JLabel("");
+		destinoLbl.setBounds(292, 42, 64, 14);
+		getContentPane().add(destinoLbl);
+
+		pointerLbl = new JLabel("->");
+		pointerLbl.setBounds(273, 41, 24, 17);
+		getContentPane().add(pointerLbl);
+
 	}
 
-	String[] loadConectionsComboBox() throws SQLException {
 
-		Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
-
-		ConectionsReplicationDAO dao = new ConectionsReplicationDAO(conn);
-		String[] Connections = dao.selectConectionNames();
-
-		return Connections;
-
-	}
 
 	String[] loadDirectionsComboBox() throws SQLException {
 
@@ -147,7 +146,7 @@ public class NextWindowReplication<E> extends JInternalFrame implements NextWind
 		return Directions;
 
 	}
-	
+
 	String[] loadProcessComboBox() throws SQLException {
 
 		Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
@@ -159,39 +158,69 @@ public class NextWindowReplication<E> extends JInternalFrame implements NextWind
 
 	}
 
+	public void UpdateFields() throws SQLException {
+
+		Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
+
+		TableReplicationDirectionDAO directionDAO = new TableReplicationDirectionDAO(conn);
+
+		origemLbl.setText(directionDAO.selectOrigem(directionCmb.getSelectedItem().toString()));
+		destinoLbl.setText(directionDAO.selectDestino(directionCmb.getSelectedItem().toString()));
+
+	}
+
+
+	public String getDirection() {
+		
+		return directionCmb.getSelectedItem().toString();
+		
+	}
+	
+	public String getProcess() {
+		
+		return processCmb.getSelectedItem().toString();
+		
+	}
+	
 	@Override
 	public void DirecaoExibir(String direcaoOrigem, String direcaoDestino) {
-		txfDirecaoOrigem.setText(direcaoOrigem);
-		txfDirecaoDestino.setText(direcaoDestino);
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void ProcessoExibir(String processo) {
-		txfProcesso.setText(processo);
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void TabelaExibir(String tabela) {
-		txfTabela.setText(tabela);
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void TabelasExibir(int quantidade) {
-		txfTabelas.setText("" + quantidade);
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void ErrosExibir(int quantidade) {
-		txfErros.setText("" + quantidade);
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void BarraProgressoIndeterminadaIniciar(boolean start) {
-		pbbIndeterminada.setIndeterminate(start);
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void BarraProgressoValor(int valor) {
-		pbbPrincipal.setValue(valor);
+		// TODO Auto-generated method stub
+
 	}
 }

@@ -67,9 +67,8 @@ public class UsuarioDAO extends MasterDAO {
 			//pst_delete = connection.prepareStatement(is_delete);
 		}
 
-	@Override
-	public List<Object> SelectAll() throws SQLException {
-		List<Object> arlUsuario = new ArrayList<Object>();
+	public List<Usuario> SelectAll(final String parameter) throws SQLException {
+		List<Usuario> arlUsuario = new ArrayList<Usuario>();
 		
 		ResultSet rst = pst_selectAll.executeQuery();
 		
@@ -188,6 +187,12 @@ public class UsuarioDAO extends MasterDAO {
 		pst_drop_role = io_connection.prepareStatement(is_drop_role);
 		return pst_drop_role.executeUpdate();
 
+	}
+
+	@Override
+	public List<Object> SelectAll() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

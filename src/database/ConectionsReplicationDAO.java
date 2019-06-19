@@ -45,7 +45,6 @@ public class ConectionsReplicationDAO extends MasterDAO {
         //pst_delete = connection.prepareStatement(is_delete);
     }
 
-
     @Override
     public List<Object> SelectAll() throws SQLException {
         return null;
@@ -69,7 +68,7 @@ public class ConectionsReplicationDAO extends MasterDAO {
             connRep.setReplicationCode(rst.getString("codigo_replicacao"));
             connRep.setConnectionName(rst.getString("nome"));
             connRep.setConnectionAddress(rst.getString("endereco"));
-            connRep.setConnectionPort(rst.getInt("porta"));
+            connRep.setConnectionPort(rst.getString("porta"));
             connRep.setDatabaseSID("database");
 
             return connRep;
@@ -78,6 +77,32 @@ public class ConectionsReplicationDAO extends MasterDAO {
         return null;
     }
 
+    public Object Select(String parameter) throws SQLException {
+        ConectionReplication connRep = null;
+
+        // Seta os parametros.
+        
+        Set(pst_select, 1, parameter);
+
+      //is_select.replace("1?", ((ConectionReplication) parameter).getConnectionName());
+      //pst_select = io_connection.prepareStatement(is_select);
+        ResultSet rst = pst_select.executeQuery();
+
+        if (rst.next()) {
+            connRep = new ConectionReplication();
+       
+            connRep.setReplicationCode(rst.getString("codigo_replicacao"));
+            connRep.setConnectionName(rst.getString("nome"));
+            connRep.setConnectionAddress(rst.getString("endereco"));
+            connRep.setConnectionPort(rst.getString("porta"));
+            connRep.setDatabaseSID("database");
+
+            return connRep;
+
+        }
+        return null;
+    }
+    
 	public String[] selectConectionNames() throws SQLException {
 		
 		ResultSet rst = pst_selectConectionNames.executeQuery();	

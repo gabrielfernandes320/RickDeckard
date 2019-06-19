@@ -160,7 +160,7 @@ public class ReplicationFrm extends JInternalFrame {
 				ConectionReplication conrep = new ConectionReplication();
 				conrep.setConnectionAddress(tbIP.getText());
 				conrep.setConnectionName(tbDescription.getText());
-				conrep.setConnectionPort(Integer.parseInt(tbPort.getText()));
+				conrep.setConnectionPort(tbPort.getText());
 				conrep.setDatabaseSID(tbDBname.getText());
 				conrep.setDatabaseType((String) cbDBmodel.getSelectedItem());
 				conrep.setUser("gabriel");
@@ -226,7 +226,7 @@ public class ReplicationFrm extends JInternalFrame {
 					conrep = (ConectionReplication) crd.Select(conrep);
 					tbDBname.setText(conrep.getDatabaseSID());
 					tbIP.setText(conrep.getConnectionAddress());
-					tbPort.setText(Integer.toString(conrep.getConnectionPort()));
+					tbPort.setText(conrep.getConnectionPort());
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
