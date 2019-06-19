@@ -21,7 +21,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import database.ConnectionFactory;
-import database.MatriculaDAO;
 import database.TableReplicationDirectionDAO;
 import model.Matricula;
 import model.ReplicationDirection;
@@ -110,6 +109,7 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 		getContentPane().add(btnAdicionar);
 
 		btnSalvar = new JButton("Salvar");
+		btnSalvar.setEnabled(false);
 		//btnSalvar.setIcon(new ImageIcon(ReplicationDirectionFrm.class.getResource("/view/images/salvar.png")));
 		btnSalvar.setPreferredSize(new Dimension(40, 25));
 		btnSalvar.setBackground(SystemColor.menu);
@@ -135,6 +135,7 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				lblProcesso.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				
 				JCheckBox chckbxHabilitarEdio = new JCheckBox("Habilitar Edi\u00E7\u00E3o");
+				chckbxHabilitarEdio.setEnabled(false);
 				chckbxHabilitarEdio.setBounds(123, 116, 114, 23);
 				panel.add(chckbxHabilitarEdio);
 				
@@ -148,7 +149,7 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				panel.add(lblTabelaOrigem);
 				lblTabelaOrigem.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				
-				lblRetencao = new JLabel("Opera\u00E7\u00E3o:");
+				lblRetencao = new JLabel("Reten\u00E7\u00E3o:");
 				lblRetencao.setHorizontalAlignment(SwingConstants.RIGHT);
 				lblRetencao.setForeground(Color.BLACK);
 				lblRetencao.setBounds(11, 87, 102, 14);
@@ -161,16 +162,19 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				txfProcesso.setColumns(10);
 				
 				txfDuracao = new JTextField();
+				txfDuracao.setEnabled(false);
 				txfDuracao.setBounds(123, 61, 150, 20);
 				panel.add(txfDuracao);
 				txfDuracao.setColumns(10);
 				
 				txfRetencao = new JTextField();
+				txfRetencao.setEnabled(false);
 				txfRetencao.setBounds(123, 86, 150, 20);
 				panel.add(txfRetencao);
 				txfRetencao.setColumns(10);
 				
 				comboBox_1 = new JComboBox();
+				comboBox_1.setEnabled(false);
 				comboBox_1.setBounds(123, 35, 150, 22);
 				panel.add(comboBox_1);
 				comboBox_1.addItem("automatico");
@@ -183,6 +187,7 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				panel_1.setLayout(null);
 				
 				txfSenhaOrigem = new JTextField();
+				txfSenhaOrigem.setEnabled(false);
 				txfSenhaOrigem.setColumns(10);
 				txfSenhaOrigem.setBounds(86, 73, 170, 20);
 				panel_1.add(txfSenhaOrigem);
@@ -199,6 +204,7 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				panel_1.add(lblUsuario_1);
 				
 				txfUsuarioOrigem = new JTextField();
+				txfUsuarioOrigem.setEnabled(false);
 				txfUsuarioOrigem.setColumns(10);
 				txfUsuarioOrigem.setBounds(86, 48, 170, 20);
 				panel_1.add(txfUsuarioOrigem);
@@ -220,6 +226,7 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				panel.add(panel_2);
 				
 				txfSenhaDestino = new JTextField();
+				txfSenhaDestino.setEnabled(false);
 				txfSenhaDestino.setColumns(10);
 				txfSenhaDestino.setBounds(86, 73, 170, 20);
 				panel_2.add(txfSenhaDestino);
@@ -236,6 +243,7 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				panel_2.add(label_1);
 				
 				txfUsuarioDestino = new JTextField();
+				txfUsuarioDestino.setEnabled(false);
 				txfUsuarioDestino.setColumns(10);
 				txfUsuarioDestino.setBounds(86, 48, 170, 20);
 				panel_2.add(txfUsuarioDestino);
@@ -257,6 +265,7 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				panel.add(panelPeriodo);
 				
 				txfDia = new JTextField();
+				txfDia.setEnabled(false);
 				txfDia.setColumns(10);
 				txfDia.setBounds(51, 73, 202, 20);
 				panelPeriodo.add(txfDia);
@@ -268,11 +277,13 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				panelPeriodo.add(lblHora);
 				
 				txfMes = new JTextField();
+				txfMes.setEnabled(false);
 				txfMes.setColumns(10);
 				txfMes.setBounds(50, 48, 203, 20);
 				panelPeriodo.add(txfMes);
 				
 				txfAno = new JTextField();
+				txfAno.setEnabled(false);
 				txfAno.setColumns(10);
 				txfAno.setBounds(50, 23, 203, 20);
 				panelPeriodo.add(txfAno);
@@ -304,44 +315,30 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				lblMs.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				
 				txfHora = new JTextField();
+				txfHora.setEnabled(false);
 				txfHora.setColumns(10);
 				txfHora.setBounds(332, 23, 202, 20);
 				panelPeriodo.add(txfHora);
 				
 				txfMinuto = new JTextField();
+				txfMinuto.setEnabled(false);
 				txfMinuto.setColumns(10);
 				txfMinuto.setBounds(332, 48, 202, 20);
 				panelPeriodo.add(txfMinuto);
 				
 				txfSegundo = new JTextField();
+				txfSegundo.setEnabled(false);
 				txfSegundo.setColumns(10);
 				txfSegundo.setBounds(332, 73, 202, 20);
 				panelPeriodo.add(txfSegundo);
 
-		// tem que colocar as modalidades dentro do JComboBox
-//		Connection conn = ConnectionFactory.getConnection("master", "admin", "admin");
-//		PlanosDAO dao = new PlanosDAO(conn);
-//		String modalidade[];
-//		
-		Connection conn = ConnectionFactory.getConnection("master", "admin", "admin");
+		Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
 
-//		// PlanosDAO pla = new PlanosDAO(conn);
-//
-//		ModalidadesDAO mod;
-//
-//		try {
-//			mod = new ModalidadesDAO(conn);
-//			modalidades = mod.SelectAllModalidade();
-//		} catch (SQLException e2) {
-//			// TODO Auto-generated catch block
-//			e2.printStackTrace();
-//		}
 
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				try {
-					TableReplicationDirectionDAO tableReplicationDirectionDAO = new TableReplicationDirectionDAO(conn);
 					ReplicationDirection model = new ReplicationDirection();
 					
 					if (comboBox_1.getSelectedIndex() == 0) {
@@ -350,7 +347,7 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 						model.setAuto_manual('m');
 					}
 					
-					if (chckbxHabilitarEdio.isSelected()) {
+					if (chckbxHabilitarEdio.isSelected() == true) {
 						model.setHabilitado('s');
 					} else {
 						model.setHabilitado('n');
@@ -365,6 +362,24 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 					model.setDatabase_destino(txfDbDestino.getText());
 					model.setUsuario_destino(txfUsuarioDestino.getText());
 					model.setSenha_destino(txfSenhaDestino.getText());
+					
+					
+					if (Integer.parseInt(txfMes.getText()) > 12) {
+						txfMes.setText("12");
+					}
+					if (Integer.parseInt(txfDia.getText()) > 31) {
+						txfDia.setText("31");
+					}
+					if (Integer.parseInt(txfHora.getText()) > 23) {
+						txfHora.setText("23");
+					}
+					if (Integer.parseInt(txfMinuto.getText()) > 59) {
+						txfMinuto.setText("59");
+					}
+					if (Integer.parseInt(txfSegundo.getText()) > 59) {
+						txfMes.setText("59");
+					}
+					
 					model.setAno(Integer.parseInt(txfAno.getText()));
 					model.setMes(Integer.parseInt(txfMes.getText()));
 					model.setDia(Integer.parseInt(txfDia.getText()));
@@ -380,7 +395,7 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-					JOptionPane.showMessageDialog(getContentPane(), "Erro: Preencha todos os campos!");
+					JOptionPane.showMessageDialog(getContentPane(), "Erro!");
 				}
 				
 				
@@ -391,36 +406,51 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-
+							
+				comboBox_1.setEnabled(true);
+				txfDuracao.setEnabled(true);
+				txfRetencao.setEnabled(true);
+				chckbxHabilitarEdio.setEnabled(true);
+				txfUsuarioDestino.setEnabled(true);
+				txfUsuarioOrigem.setEnabled(true);
+				txfSenhaDestino.setEnabled(true);
+				txfSenhaOrigem.setEnabled(true);
+				txfAno.setEnabled(true);
+				txfMes.setEnabled(true);
+				txfDia.setEnabled(true);
+				txfHora.setEnabled(true);
+				txfMinuto.setEnabled(true);
+				txfSegundo.setEnabled(true);
+				btnSalvar.setEnabled(true);
 			}
 		});
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-
+				ProccessSearchFrm searchForm = new ProccessSearchFrm(ReplicationDirectionFrm.this);
+				searchForm.setVisible(true);	
+				
 			}
 		});
 		btnRemover.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				try {
+					ReplicationDirection model = new ReplicationDirection();
+					
+					model.setProcesso(txfProcesso.getText());
+					
+					conn.setAutoCommit(false);
+					TableReplicationDirectionDAO dao = new TableReplicationDirectionDAO(conn);
+					
+					dao.DeleteDirecao(model);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 	}
-
-//	public void Update(final Plano p) {
-//
-//		txfPlano.setText(p.getPlano());
-//		txfValor.setText("" + p.getValor());
-//		cbxModalidade.setSelectedItem(p.getModalidade());
-//		abrirBotoes();
-//		updateCampos();
-//		IsUpdate = true;
-//
-////	while()
-////	cbxModalidade.setSelectedIndex();
-////		
-//	}
 
 	public void abrirCampos() {
 		
