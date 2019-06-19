@@ -273,8 +273,9 @@ public class ReplicationTableFrm extends JInternalFrame {
 					
 					TableReplicationDAO tableReplicationDAO = new TableReplicationDAO(conn);
 					TbTableReplication model = new TbTableReplication();
-					model.setTabela_origem(txf_source_table.getText());;
-					tableReplicationDAO.Delete(model);
+					model.setTabela_origem(txf_source_table.getText());
+					model.setOrdem(Integer.parseInt(txf_order.getText().toString()));
+					tableReplicationDAO.Delete(tableReplicationDAO.select(model));
 					
 					txf_proccess.setText("clique...");
 					txf_order.setText("");
@@ -328,6 +329,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 	}
 	
 	public void update(TbTableReplication t) {
+		txf_proccess.setText(t.getProcesso());
 		txf_source_table.setText(t.getTabela_destino());
 		txf_order.setText(t.getOrdem().toString());
 		txf_source_table.setText(t.getTabela_origem());

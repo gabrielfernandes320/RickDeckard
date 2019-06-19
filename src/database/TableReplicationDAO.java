@@ -17,6 +17,7 @@ public class TableReplicationDAO extends MasterDAO {
 	private String is_selectAll = "select * from tb_replicacao_tabela";
 	private String is_select = "select * from tb_replicacao_tabela where processo like ?, ordem like ? ";
 	private String is_selecT = "select * from tb_replicacao_tabela where processo like ? ";
+	private String is_Select = "select * from tb_replicacao_tabela  where tabela_origem =? and ordem =?";
 	private String is_insert = "INSERT INTO tb_replicacao_tabela			"
 								+ "(							"
 								+ "	usuario,					"
@@ -36,10 +37,11 @@ public class TableReplicationDAO extends MasterDAO {
 	
 	private String is_update = "";
 	
-	private String is_delete = "DELETE * FROM tb_replicacao_tabela WHERE codigo_processo = ?";
+	private String is_delete = "DELETE FROM tb_replicacao_tabela WHERE codigo_replicacao = ?";
 	
 	private PreparedStatement pst_selectAll;
 	private PreparedStatement pst_select;
+	private PreparedStatement pst_Select;
 	private PreparedStatement pst_selecT;
 	private PreparedStatement pst_insert;
 	private PreparedStatement pst_update;
@@ -51,9 +53,33 @@ public class TableReplicationDAO extends MasterDAO {
 		io_connection = connection;
 		pst_selectAll = connection.prepareStatement(is_selectAll);
 		pst_select = connection.prepareStatement(is_select);
+		pst_Select = connection.prepareStatement(is_Select);
 		pst_selecT = connection.prepareStatement(is_selecT);
 		pst_insert = connection.prepareStatement(is_insert);
 		pst_update = connection.prepareStatement(is_update);
+		pst_delete = connection.prepareStatement(is_delete);
+	}
+	
+public Object select(Object parameter) throws SQLException {
+		
+		TbTableReplication tableReptab = (TbTableReplication)parameter;
+		
+		Set(pst_Select, 1, ((TbTableReplication)parameter).getTabela_origem());
+		Set(pst_Select, 2, ((TbTableReplication)parameter).getOrdem());
+		
+		ResultSet rst = pst_Select.executeQuery();
+		if(rst.next()) {
+			tableReptab = new TbTableReplication();
+			tableReptab.setCodigo_replicacao(rst.getInt("codigo_replicacao"));
+			tableReptab.setProcesso(rst.getString("processo"));
+			tableReptab.setOrdem(rst.getInt("ordem"));
+			tableReptab.setTabela_origem(rst.getString("tabela_origem"));
+			tableReptab.setTabela_destino(rst.getString("tabela_destino"));
+			tableReptab.setColuna_chave(rst.getString("coluna_chave"));
+			tableReptab.setColuna_tipo(rst.getString("coluna_tipo"));
+		}
+		return tableReptab;
+
 	}
 
 	public Object SelecT(Object parameter) throws SQLException {

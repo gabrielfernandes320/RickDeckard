@@ -54,6 +54,7 @@ public class TableSearchFrm extends JDialog {
 	 * Create the dialog.
 	 */
 	public TableSearchFrm(final ReplicationTableFrm window) {
+		setTitle("Pesquisa de tabelas por processos");
 		setBounds(100, 100, 471, 330);
 		getContentPane().setLayout(null);
 		{
