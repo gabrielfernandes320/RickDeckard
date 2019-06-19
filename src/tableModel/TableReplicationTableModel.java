@@ -41,8 +41,19 @@ public class TableReplicationTableModel extends AbstractTableModel {
 		TbTableReplication modal = tb_rep_exec.get(rowIndex);
 
 		modal.setTabela_origem(aValue.getTabela_origem());
+		modal.setOrdem(aValue.getOrdem());
+		modal.setTabela_origem(aValue.getTabela_origem());
+		modal.setTabela_destino(aValue.getTabela_destino());
+		modal.setColuna_chave(aValue.getColuna_chave());
+		modal.setColuna_tipo(aValue.getColuna_tipo());
 		
 		fireTableCellUpdated(rowIndex, 0);
+		fireTableCellUpdated(rowIndex, 1);
+		fireTableCellUpdated(rowIndex, 2);
+		fireTableCellUpdated(rowIndex, 3);
+		fireTableCellUpdated(rowIndex, 4);
+		fireTableCellUpdated(rowIndex, 5);
+		
 	}
 	
 	
@@ -52,12 +63,22 @@ public class TableReplicationTableModel extends AbstractTableModel {
 		switch (columnIndex) {
 		case 0:
 			modal.setProcesso(aValue.getTabela_origem());
+			break;
+		case 1:
 			modal.setOrdem(aValue.getOrdem());
+			break;
+		case 2:
 			modal.setTabela_origem(aValue.getTabela_origem());
+			break;
+		case 3:	
 			modal.setTabela_destino(aValue.getTabela_destino());
+			break;
+		case 4:
 			modal.setColuna_chave(aValue.getColuna_chave());
+			break;
+		case 5:
 			modal.setColuna_tipo(aValue.getColuna_tipo());
-			
+			break;
 		default:
 			System.err.println("Índice da coluna inválido");
 		}
