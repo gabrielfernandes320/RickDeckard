@@ -8,9 +8,14 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import database.AlunoDAO;
+import database.AssiduidadeDAO;
+import database.CitiesDAO;
 import database.ConectionsReplicationDAO;
 import database.ConnectionFactory;
 import database.GraduacoesDAO;
+import database.InvoiceDAO;
+import database.MatriculaDAO;
+import database.Matricula_ModalidadeDAO;
 import database.ModalidadesDAO;
 import database.PlanosDAO;
 import database.TableReplicationDAO;
@@ -18,8 +23,13 @@ import database.TableReplicationDirectionDAO;
 import database.TableReplicationProcessDAO;
 import database.UsuarioDAO;
 import model.Aluno;
+import model.Assiduidade;
+import model.Cidade;
 import model.ConectionReplication;
 import model.Graduacoes;
+import model.Invoice;
+import model.Matricula;
+import model.Matricula_Modalidade;
 import model.Modalidades;
 import model.Plano;
 import model.Usuario;
@@ -33,13 +43,20 @@ public class NextReplicationExecute {
 	private Connection conn_origin;
 	private Connection conn_destiny;
 
-	private int alunos;
-	private int planos;
-	private int graduacoes;
-	private int modalidades;
-	private int usuarios;
+	private int alunos = 0 ;
+	private int planos = 0;
+	private int graduacoes= 0;
+	private int modalidades= 0;
+	private int usuarios= 0;
+	private int assiduidade= 0;
+	private int matriculas= 0;
+	private int matriculas_modalidades= 0;
+	private int cidades= 0;
+	private int faturas_matriculas= 0;
 	
-	private int progress;
+	private int progress = 0;
+	private int progressPerTable;
+	private int lines_changed;
 
 	public NextReplicationExecute(NextWindowReplication window) throws SQLException {
 
@@ -76,45 +93,161 @@ public class NextReplicationExecute {
 					
 					try {
 							
+						lines_changed = 0;
+						
 						TableReplicationDAO ReplicationDAO = new TableReplicationDAO(conn);
 												
 						for(int row = 0; ReplicationDAO.Select(io_window.getProcess(), row) != null; row++) {
 							
 							switch(ReplicationDAO.Select(io_window.getProcess(), row).getTabela_destino()){
 								
-							case "Alunos":
+							case "alunos":
 								
-								ReplicateStudents();
 								alunos++;
+								progress++;
 								break;
 								
-							case "Planos":
+							case "planos":
 								
-								ReplicatePlans();
 								planos++;
+								progress++;
 								break;
 								
-							case "Graduacoes":
+							case "graduacoes":
 								
-								ReplicateGraduation();
 								graduacoes++;
+								progress++;
 								break;
 								
-							case "Modalidades":
+							case "modalidades":
 								
-								ReplicateModality();
 								modalidades++;
+								progress++;
 								break;
 								
-							case "Usuarios":
+							case "usuarios":
 								
-								ReplicateUsers();
 								usuarios++;
+								progress++;
 								break;
-																						
+								
+							case "assiduidade":
+								
+								assiduidade++;
+								progress++;
+								break;		
+								
+							case "matriculas":
+								
+								matriculas++;
+								progress++;
+								break;
+						
+							case "matriculas_modalidades":
+								
+								matriculas_modalidades++;
+								progress++;
+								break;
+								
+							case "faturas_matriculas:":
+								faturas_matriculas++;
+								progress++;
+								break;
+								
+							case "cidades":
+								cidades++;
+								progress++;
+								break;
+							default:								
+								
 							}
+																																								
+						}
+																		
+						progressPerTable = 100/progress;	
+						progress = 0;
+						io_window.setProgress(progress);
+						
+						if(alunos != 0) {
+							
+							lines_changed = lines_changed + ReplicateStudents();
+							
+							io_window.setProgress(progress);
 							
 						}
+						
+						if(planos != 0) {
+							
+							lines_changed = lines_changed + ReplicatePlans();
+							progress = progress + progressPerTable;
+							io_window.setProgress(progress);
+							
+						}
+						
+						if(graduacoes != 0) {
+							
+							lines_changed = lines_changed + ReplicateGraduation();
+							progress = progress + progressPerTable;
+							io_window.setProgress(progress);
+							
+						}
+						
+						if(modalidades != 0) {
+							
+							lines_changed = lines_changed + ReplicateModality();
+							progress = progress + progressPerTable;
+							io_window.setProgress(progress);
+							
+						}
+						
+						if(usuarios != 0) {
+							
+							lines_changed = lines_changed + ReplicateUsers();
+							progress = progress + progressPerTable;
+							io_window.setProgress(progress);
+							
+						}
+						
+						if(assiduidade != 0) {
+							
+							lines_changed = lines_changed + ReplicateAssiduidade();
+							progress = progress + progressPerTable;
+							io_window.setProgress(progress);
+							
+						}
+						
+						if(matriculas != 0) {
+							
+							lines_changed = lines_changed + ReplicateMatriculas();
+							progress = progress + progressPerTable;
+							io_window.setProgress(progress);
+							
+						}
+						
+						if(matriculas_modalidades != 0) {
+							
+							lines_changed = lines_changed + ReplicateMatriculas_modalidades();
+							progress = progress + progressPerTable;
+							io_window.setProgress(progress);
+							
+						}
+						
+						if(faturas_matriculas != 0) {
+							
+							lines_changed = lines_changed + ReplicateFaturas_matriculas();
+							progress = progress + progressPerTable;
+							io_window.setProgress(progress);
+							
+						}
+						
+						if(cidades != 0) {
+							
+							lines_changed = lines_changed + ReplicateCidade();
+							progress = progress + progressPerTable;
+							io_window.setProgress(progress);
+							
+						}
+						
 						
 						JOptionPane.showMessageDialog(io_window, "Sucesso!", "Alerta:", JOptionPane.INFORMATION_MESSAGE);				
 						
@@ -125,6 +258,7 @@ public class NextReplicationExecute {
 					
 				}			
 			}
+			
 		}).start();
 		
 	}
@@ -233,5 +367,110 @@ public class NextReplicationExecute {
 		return Rows;
 
 	}
+	
+	public int ReplicateAssiduidade() throws SQLException {
 
+		AssiduidadeDAO origin_dao = new AssiduidadeDAO(conn_origin);
+		AssiduidadeDAO destiny_dao = new AssiduidadeDAO(conn_destiny);
+
+		List<Assiduidade> List = origin_dao.SelectAllP(1);
+
+		int Rows = 0;
+
+		while (List.get(Rows) != null) {
+
+			destiny_dao.Insert(List.get(Rows));
+
+			Rows++;
+
+		}
+
+		return Rows;
+
+	}
+	
+	public int ReplicateMatriculas() throws SQLException {
+
+		MatriculaDAO origin_dao = new MatriculaDAO(conn_origin);
+		MatriculaDAO destiny_dao = new MatriculaDAO(conn_destiny);
+
+		List<Matricula> List = origin_dao.SelectAll(1);
+
+		int Rows = 0;
+
+		while (List.get(Rows) != null) {
+
+			destiny_dao.Insert(List.get(Rows));
+
+			Rows++;
+
+		}
+
+		return Rows;
+
+	}
+
+	public int ReplicateMatriculas_modalidades() throws SQLException {
+
+		Matricula_ModalidadeDAO origin_dao = new Matricula_ModalidadeDAO(conn_origin);
+		Matricula_ModalidadeDAO destiny_dao = new Matricula_ModalidadeDAO(conn_destiny);
+
+		List<Matricula_Modalidade> List = origin_dao.SelectAllP(1);
+
+		int Rows = 0;
+
+		while (List.get(Rows) != null) {
+
+			destiny_dao.Insert(List.get(Rows));
+
+			Rows++;
+
+		}
+
+		return Rows;
+
+	}
+
+	public int ReplicateFaturas_matriculas() throws SQLException {
+
+		InvoiceDAO origin_dao = new InvoiceDAO(conn_origin);
+		InvoiceDAO destiny_dao = new InvoiceDAO(conn_destiny);
+
+		List<Invoice> List = origin_dao.SelectAllP(1);
+
+		int Rows = 0;
+
+		while (List.get(Rows) != null) {
+
+			destiny_dao.Insert(List.get(Rows));
+
+			Rows++;
+
+		}
+
+		return Rows;
+
+	}
+	
+	public int ReplicateCidade() throws SQLException {
+
+		CitiesDAO origin_dao = new CitiesDAO(conn_origin);
+		CitiesDAO destiny_dao = new CitiesDAO(conn_destiny);
+
+		List<Cidade> List = origin_dao.SelectAllP(1);
+
+		int Rows = 0;
+
+		while (List.get(Rows) != null) {
+
+			destiny_dao.Insert(List.get(Rows));
+
+			Rows++;
+
+		}
+
+		return Rows;
+
+	}
+	
 }

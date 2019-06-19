@@ -18,10 +18,11 @@ import database.ConectionsReplicationDAO;
 import database.ConnectionFactory;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
-public class NextWindowReplication<E> extends JInternalFrame implements NextWindowController {
+public class NextWindowReplication<E> extends JInternalFrame {
 
 	private JLabel origemLbl;
 	private JLabel destinoLbl;
@@ -34,6 +35,7 @@ public class NextWindowReplication<E> extends JInternalFrame implements NextWind
 	private JComboBox<E> directionCmb;
 	private JProgressBar pbbPrincipal;
 	private JProgressBar pbbIndeterminada;
+	private int progresso;
 	private JButton btnReplicar;
 
 	public static void main(String[] args) throws SQLException {
@@ -169,7 +171,6 @@ public class NextWindowReplication<E> extends JInternalFrame implements NextWind
 
 	}
 
-
 	public String getDirection() {
 		
 		return directionCmb.getSelectedItem().toString();
@@ -182,45 +183,25 @@ public class NextWindowReplication<E> extends JInternalFrame implements NextWind
 		
 	}
 	
-	@Override
-	public void DirecaoExibir(String direcaoOrigem, String direcaoDestino) {
-		// TODO Auto-generated method stub
-
+	public int getProgress() {
+		
+		return progresso;
+		
 	}
-
-	@Override
-	public void ProcessoExibir(String processo) {
-		// TODO Auto-generated method stub
-
+	
+	public void setProgress(int newvalue) {
+		
+		progresso = newvalue;
+		pbbPrincipal.setValue(newvalue);
+		
+		if (newvalue >= 100) {
+			
+			pbbPrincipal.setValue(100);
+			JOptionPane.showMessageDialog(getContentPane(), "Sucesso!", "Alerta:", JOptionPane.INFORMATION_MESSAGE);	
+			
+		}
+		
+		
 	}
-
-	@Override
-	public void TabelaExibir(String tabela) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void TabelasExibir(int quantidade) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void ErrosExibir(int quantidade) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void BarraProgressoIndeterminadaIniciar(boolean start) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void BarraProgressoValor(int valor) {
-		// TODO Auto-generated method stub
-
-	}
+	
 }
