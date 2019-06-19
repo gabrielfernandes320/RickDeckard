@@ -75,7 +75,7 @@ public class ReplicationDirection {
 	public void setHabilitado(char habilitado) {
 		this.habilitado = habilitado;
 	}
-	public int getCodigo_direcao() {
+	public int getCodigo_direcao(int i) {
 		return codigo_direcao;
 	}
 	public void setCodigo_direcao(int codigo_direcao) {
