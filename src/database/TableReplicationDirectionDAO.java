@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.sql.Connection;
 import model.ConectionReplication;
+import model.Matricula;
 import model.ReplicationDirection;
 
 public class TableReplicationDirectionDAO extends MasterDAO {
@@ -14,16 +15,19 @@ public class TableReplicationDirectionDAO extends MasterDAO {
     private String is_select = "select database_origem, database_destino from tb_replicacao_direcao where nome = ?";
     
     private String is_insertDirecao = "insert into tb_replicacao_direcao "
-    		+ "(codigo_direcao, data_atual, processo, database_origem, database_destino," //5
-    		+ "usuario_origem, usuario_destino, senha_origem, senha_destino,"			//9
-    		+ "automatico_manual, periodo_ano, periodo_mes, periodo_dia,"				//13
-    		
-    		+ "periodo_hora, periodo_minuto, periodo_segundo, retencao, habilitado) "	//18
-    		+ "values (default, default, ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    		+ "(codigo_direcao, data_atual, usuario, processo, database_origem, database_destino," 		//6
+    		+ "usuario_origem, usuario_destino, senha_origem, senha_destino,"							//10
+    		+ "automatico_manual, periodo_ano, periodo_mes, periodo_dia,"								//14 		
+    		+ "periodo_hora, periodo_minuto, periodo_segundo, retencao, habilitado, duracao_maximo) "	//20
+    		+ "values (default, default, 'Guilherme', ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+   
+    private String is_selectDbOrigem = "select * from tb_replicacao where database like ?";
     
     private String is_selectOrigem = "select database_origem from tb_replicacao_direcao where nome = ?";
     
     private String is_selectDestino = "select database_destino from tb_replicacao_direcao where nome = ?";
+   
+    private String is_selectProcesso = "select * from tb_replicacao_direcao where processo like ?";
     
     private String is_selectDirectionNames = "select codigo_direcao from tb_replicacao_direcao where processo = ?";
 
@@ -42,6 +46,8 @@ public class TableReplicationDirectionDAO extends MasterDAO {
     private String is_deleteDirection = "delete from tb_replicacao_direcao where processo = ?";
 
     private PreparedStatement pst_select;
+    private PreparedStatement pst_selectProcesso;
+    private PreparedStatement pst_selectDbOrigem;
     private PreparedStatement pst_selectDirectionNames;
     private PreparedStatement pst_insert;
     private PreparedStatement pst_insertDirecao;
@@ -57,6 +63,8 @@ public class TableReplicationDirectionDAO extends MasterDAO {
             throws SQLException {
         io_connection = connection;
         pst_select = connection.prepareStatement(is_select);
+        pst_selectProcesso = connection.prepareStatement(is_selectProcesso);
+        pst_selectDbOrigem = connection.prepareStatement(is_selectDbOrigem);
         pst_insert = connection.prepareStatement(is_insert);
         pst_insertDirecao = connection.prepareStatement(is_insertDirecao);
         pst_selectDirectionNames = connection.prepareStatement(is_selectDirectionNames);
@@ -94,20 +102,97 @@ public class TableReplicationDirectionDAO extends MasterDAO {
 		Set(pst_insertDirecao, 14, lo_replication.getSegundo());
 		Set(pst_insertDirecao, 15, lo_replication.getRetencao());
 		Set(pst_insertDirecao, 16, lo_replication.getHabilitado());
-		
+		Set(pst_insertDirecao, 17, lo_replication.getDuracao());
+	
 		System.out.println(pst_insertDirecao);
 		
 		pst_insertDirecao.execute();
 		
-		if (pst_insertDirecao.getUpdateCount() > 0) {
+		if (pst_insertDirecao.getUpdateCount() > 0) {		
 			io_connection.commit();
 		}
-		
-
-
-		
 
     }
+    
+    public ReplicationDirection SelectProcesso (Object parameter) {
+ 
+    	
+    		try {
+    			ReplicationDirection model = null;
+    	    	ReplicationDirection lo_direction = (ReplicationDirection)parameter;
+    	    	
+    	    	Set(pst_selectProcesso, 1, lo_direction.getProcesso()+"%");
+    	    	
+    	    	ResultSet rst = pst_selectProcesso.executeQuery();
+    	    	
+    	    	if (rst.next()) {
+    	    		model = new ReplicationDirection();
+    	    		model.setAno(rst.getInt("periodo_ano"));   		
+    	    		model.setCodigo_direcao(rst.getInt("codigo_direcao"));
+    	    		model.setData_atual(rst.getDate("data_atual"));
+    	    		model.setDatabase_destino(rst.getString("database_destino"));
+    	    		model.setDatabase_origem(rst.getString("database_origem"));
+    	    		model.setDia(rst.getInt("periodo_dia"));
+    	    		model.setHora(rst.getInt("periodo_hora"));
+    	    		model.setMes(rst.getInt("periodo_mes"));
+    	    		model.setMinuto(rst.getInt("periodo_minuto"));
+    	    		model.setProcesso(rst.getString("processo"));
+    	    		model.setRetencao(rst.getInt("retencao"));
+    	    		model.setSegundo(rst.getInt("periodo_segundo"));
+    	    		model.setUsuario_destino(rst.getString("usuario_destino"));
+    	    		model.setUsuario_origem(rst.getString("usuario_origem"));
+    	    		model.setDuracao(rst.getInt("duracao_maximo"));
+    	    		model.setSenha_destino(rst.getString("senha_destino"));
+    	    		model.setSenha_origem(rst.getString("senha_origem"));
+    	    		
+    	    		model.setAuto_manual(rst.getString("automatico_manual").charAt(0));
+    	    		model.setHabilitado(rst.getString("habilitado").charAt(0));
+    	    		
+    	    		return model;
+    	    	} else {
+    	    		return null;
+    	    	}
+    	    	
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+    		
+    	}
+    
+    
+    public ReplicationDirection SelectDatabase (Object parameter) {
+    	 
+    	
+		try {
+			ReplicationDirection model = null;
+	    	ReplicationDirection lo_direction = (ReplicationDirection)parameter;
+	    	
+	    	Set(pst_selectDbOrigem, 1, lo_direction.getDatabase_origem()+"%");
+	    	
+	    	ResultSet rst = pst_selectDbOrigem.executeQuery();
+	    	
+	    	if (rst.next()) {
+	    		model = new ReplicationDirection();
+	    			    		
+	    		model.setDatabase_origem(rst.getString("database"));		
+	    		model.setUsuario_origem(rst.getString("usuario"));
+	    		//model.setDatabase_destino(rst.getString("database"));		
+	    		//model.setUsuario_destino(rst.getString("usuario"));
+	    		
+	    		return model;
+	    	} else {
+	    		return null;
+	    	}
+	    	
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
     
     public String[] Select(String nome) throws SQLException {
     	
@@ -196,8 +281,6 @@ public class TableReplicationDirectionDAO extends MasterDAO {
 		
 		
 		pst_insert.execute();
-		
-
     }
 
     	
@@ -220,7 +303,13 @@ public class TableReplicationDirectionDAO extends MasterDAO {
 		
 		Set(pst_deleteDirection, 1, lo_replication.getProcesso());
 		
+		System.out.println(pst_deleteDirection);
+		
 		pst_deleteDirection.execute();
+		
+		if (pst_deleteDirection.getUpdateCount() > 0) {
+			io_connection.commit();
+		}
     }
 
 	@Override
