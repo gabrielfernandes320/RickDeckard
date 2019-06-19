@@ -29,6 +29,7 @@ public class PrincipalWindow extends JFrame {
 	JDesktopPane desktopPane;
 	JMenuBar menuBar;
 	JMenuItem itemConnectionReplication;
+	JMenuItem itemReplicationDirection;
 	JMenuItem itemReplicationTable;
 	JMenuItem itemReplication;
 	JMenu menuCadastros;
@@ -155,6 +156,7 @@ public class PrincipalWindow extends JFrame {
 		itemConnectionReplication = new JMenuItem("Conexoes");
 		itemReplicationTable = new JMenuItem("Cadastro de tabelas");
 		itemReplication = new JMenuItem("Replicação");
+		itemReplicationDirection = new JMenuItem("Direção");
 		// icones dos itens
 
 		// itemUsuariosSist.setIcon(new
@@ -162,6 +164,7 @@ public class PrincipalWindow extends JFrame {
 		menuCadastros.add(itemConnectionReplication);
 		menuCadastros.add(itemReplicationTable);
 		menuReplica.add(itemReplication);
+		menuReplica.add(itemReplicationDirection);
 		
 		menuBar.add(menuCadastros);
 		menuBar.add(menuReplica);
@@ -169,6 +172,33 @@ public class PrincipalWindow extends JFrame {
 		// AÃ¯Â¿Â½Ã¯Â¿Â½es para os item abaixo
 		// Sistema
 
+		itemReplicationDirection.addActionListener(new ActionListener() {
+			ReplicationDirectionFrm rdf;
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+					if (JanelaVerificar(ReplicationDirectionFrm.class.getName())) {
+
+					} else {
+						rdf = new ReplicationDirectionFrm();
+						rdf.setName(ReplicationDirectionFrm.class.getName());
+						rdf.setLocation(1, 1);
+						desktopPane.add(rdf);
+						rdf.setVisible(true);
+					}
+
+				}
+
+				private void JanelaFocar(ReplicationDirectionFrm us) {
+					try {
+						us.setSelected(true);
+					} catch (PropertyVetoException ex) {
+						ex.printStackTrace();
+					}
+				
+			}
+		});
+		
 		itemReplicationTable.addActionListener(new ActionListener() {
 			ReplicationTableFrm rtf;
 

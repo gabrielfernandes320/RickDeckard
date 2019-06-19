@@ -21,10 +21,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import database.ConnectionFactory;
+import database.MatriculaDAO;
+import database.TableReplicationDirectionDAO;
+import model.Matricula;
+import model.ReplicationDirection;
+
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.SwingConstants;
 
 
 
@@ -37,38 +43,38 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 	private Boolean IsUpdate;
 	private JLabel lblOrdem;
 	private JLabel lblTabelaOrigem;
-	private JLabel lblOperao;
-	private JTextField textField;
-	private JTextField textField_2;
-	private JTextField textField_3;
+	private JLabel lblRetencao;
+	private JTextField txfProcesso;
+	private JTextField txfDuracao;
+	private JTextField txfRetencao;
 	private JComboBox comboBox_1;
 	private JPanel panel_1;
-	private JTextField textField_1;
+	private JTextField txfSenhaOrigem;
 	private JLabel lblSenha;
 	private JLabel lblUsuario_1;
-	private JTextField textField_4;
-	private JTextField textField_5;
+	private JTextField txfUsuarioOrigem;
+	private JTextField txfDbOrigem;
 	private JLabel lblUsuario;
 	private JPanel panel_2;
-	private JTextField textField_6;
+	private JTextField txfSenhaDestino;
 	private JLabel label;
 	private JLabel label_1;
-	private JTextField textField_7;
-	private JTextField textField_8;
+	private JTextField txfUsuarioDestino;
+	private JTextField txfDbDestino;
 	private JLabel label_2;
-	private JPanel panel_3;
-	private JTextField textField_9;
+	private JPanel panelPeriodo;
+	private JTextField txfDia;
 	private JLabel lblHora;
 	private JLabel lblMs;
-	private JTextField textField_10;
-	private JTextField textField_11;
+	private JTextField txfMes;
+	private JTextField txfAno;
 	private JLabel lblAno;
 	private JLabel lblMinuto;
 	private JLabel lblMinuto_1;
 	private JLabel lblSegundo;
-	private JTextField textField_12;
-	private JTextField textField_13;
-	private JTextField textField_14;
+	private JTextField txfHora;
+	private JTextField txfMinuto;
+	private JTextField txfSegundo;
 
 	/**
 	 * Launch the application.
@@ -93,25 +99,25 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 		btnBuscar.setBounds(10, 11, 96, 31);
 		btnBuscar.setPreferredSize(new Dimension(40, 25));
 		btnBuscar.setBackground(new Color(240, 240, 240));
-		btnBuscar.setIcon(new ImageIcon(ReplicationDirectionFrm.class.getResource("/view/images/localizar.png")));
+		//btnBuscar.setIcon(new ImageIcon(ReplicationDirectionFrm.class.getResource("/view/images/localizar.png")));
 		getContentPane().add(btnBuscar);
 
 		btnAdicionar = new JButton("Adicionar");
-		btnAdicionar.setIcon(new ImageIcon(ReplicationDirectionFrm.class.getResource("/view/images/adicionar.png")));
+		//btnAdicionar.setIcon(new ImageIcon(ReplicationDirectionFrm.class.getResource("/view/images/adicionar.png")));
 		btnAdicionar.setPreferredSize(new Dimension(40, 25));
 		btnAdicionar.setBackground(SystemColor.menu);
 		btnAdicionar.setBounds(104, 11, 114, 31);
 		getContentPane().add(btnAdicionar);
 
 		btnSalvar = new JButton("Salvar");
-		btnSalvar.setIcon(new ImageIcon(ReplicationDirectionFrm.class.getResource("/view/images/salvar.png")));
+		//btnSalvar.setIcon(new ImageIcon(ReplicationDirectionFrm.class.getResource("/view/images/salvar.png")));
 		btnSalvar.setPreferredSize(new Dimension(40, 25));
 		btnSalvar.setBackground(SystemColor.menu);
 		btnSalvar.setBounds(328, 11, 114, 31);
 		getContentPane().add(btnSalvar);
 
 		btnRemover = new JButton("Remover");
-		btnRemover.setIcon(new ImageIcon(ReplicationDirectionFrm.class.getResource("/view/images/remover.png")));
+		//btnRemover.setIcon(new ImageIcon(ReplicationDirectionFrm.class.getResource("/view/images/remover.png")));
 		btnRemover.setPreferredSize(new Dimension(40, 25));
 		btnRemover.setBackground(SystemColor.menu);
 		btnRemover.setBounds(216, 11, 114, 31);
@@ -142,30 +148,33 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				panel.add(lblTabelaOrigem);
 				lblTabelaOrigem.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				
-				lblOperao = new JLabel("(\u00D1 Consegui ler)");
-				lblOperao.setForeground(Color.RED);
-				lblOperao.setBounds(11, 87, 102, 14);
-				panel.add(lblOperao);
-				lblOperao.setFont(new Font("Tahoma", Font.PLAIN, 15));
+				lblRetencao = new JLabel("Opera\u00E7\u00E3o:");
+				lblRetencao.setHorizontalAlignment(SwingConstants.RIGHT);
+				lblRetencao.setForeground(Color.BLACK);
+				lblRetencao.setBounds(11, 87, 102, 14);
+				panel.add(lblRetencao);
+				lblRetencao.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				
-				textField = new JTextField();
-				textField.setBounds(123, 11, 150, 20);
-				panel.add(textField);
-				textField.setColumns(10);
+				txfProcesso = new JTextField();
+				txfProcesso.setBounds(123, 11, 150, 20);
+				panel.add(txfProcesso);
+				txfProcesso.setColumns(10);
 				
-				textField_2 = new JTextField();
-				textField_2.setBounds(123, 61, 150, 20);
-				panel.add(textField_2);
-				textField_2.setColumns(10);
+				txfDuracao = new JTextField();
+				txfDuracao.setBounds(123, 61, 150, 20);
+				panel.add(txfDuracao);
+				txfDuracao.setColumns(10);
 				
-				textField_3 = new JTextField();
-				textField_3.setBounds(123, 86, 150, 20);
-				panel.add(textField_3);
-				textField_3.setColumns(10);
+				txfRetencao = new JTextField();
+				txfRetencao.setBounds(123, 86, 150, 20);
+				panel.add(txfRetencao);
+				txfRetencao.setColumns(10);
 				
 				comboBox_1 = new JComboBox();
 				comboBox_1.setBounds(123, 35, 150, 22);
 				panel.add(comboBox_1);
+				comboBox_1.addItem("automatico");
+				comboBox_1.addItem("manual");
 				
 				panel_1 = new JPanel();
 				panel_1.setBorder(new TitledBorder(null, "Origem", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -173,10 +182,10 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				panel.add(panel_1);
 				panel_1.setLayout(null);
 				
-				textField_1 = new JTextField();
-				textField_1.setColumns(10);
-				textField_1.setBounds(86, 73, 170, 20);
-				panel_1.add(textField_1);
+				txfSenhaOrigem = new JTextField();
+				txfSenhaOrigem.setColumns(10);
+				txfSenhaOrigem.setBounds(86, 73, 170, 20);
+				panel_1.add(txfSenhaOrigem);
 				
 				lblSenha = new JLabel("Senha:");
 				lblSenha.setForeground(Color.BLACK);
@@ -189,15 +198,15 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				lblUsuario_1.setBounds(20, 49, 54, 14);
 				panel_1.add(lblUsuario_1);
 				
-				textField_4 = new JTextField();
-				textField_4.setColumns(10);
-				textField_4.setBounds(86, 48, 170, 20);
-				panel_1.add(textField_4);
+				txfUsuarioOrigem = new JTextField();
+				txfUsuarioOrigem.setColumns(10);
+				txfUsuarioOrigem.setBounds(86, 48, 170, 20);
+				panel_1.add(txfUsuarioOrigem);
 				
-				textField_5 = new JTextField();
-				textField_5.setColumns(10);
-				textField_5.setBounds(86, 23, 170, 20);
-				panel_1.add(textField_5);
+				txfDbOrigem = new JTextField();
+				txfDbOrigem.setColumns(10);
+				txfDbOrigem.setBounds(86, 23, 170, 20);
+				panel_1.add(txfDbOrigem);
 				
 				lblUsuario = new JLabel("Database:");
 				lblUsuario.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -206,14 +215,14 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				
 				panel_2 = new JPanel();
 				panel_2.setLayout(null);
-				panel_2.setBorder(new TitledBorder(null, "Origem", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+				panel_2.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Destino", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 				panel_2.setBounds(293, 146, 272, 109);
 				panel.add(panel_2);
 				
-				textField_6 = new JTextField();
-				textField_6.setColumns(10);
-				textField_6.setBounds(86, 73, 170, 20);
-				panel_2.add(textField_6);
+				txfSenhaDestino = new JTextField();
+				txfSenhaDestino.setColumns(10);
+				txfSenhaDestino.setBounds(86, 73, 170, 20);
+				panel_2.add(txfSenhaDestino);
 				
 				label = new JLabel("Senha:");
 				label.setForeground(Color.BLACK);
@@ -226,88 +235,88 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				label_1.setBounds(22, 49, 54, 14);
 				panel_2.add(label_1);
 				
-				textField_7 = new JTextField();
-				textField_7.setColumns(10);
-				textField_7.setBounds(86, 48, 170, 20);
-				panel_2.add(textField_7);
+				txfUsuarioDestino = new JTextField();
+				txfUsuarioDestino.setColumns(10);
+				txfUsuarioDestino.setBounds(86, 48, 170, 20);
+				panel_2.add(txfUsuarioDestino);
 				
-				textField_8 = new JTextField();
-				textField_8.setColumns(10);
-				textField_8.setBounds(86, 23, 170, 20);
-				panel_2.add(textField_8);
+				txfDbDestino = new JTextField();
+				txfDbDestino.setColumns(10);
+				txfDbDestino.setBounds(86, 23, 170, 20);
+				panel_2.add(txfDbDestino);
 				
 				label_2 = new JLabel("Database:");
 				label_2.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				label_2.setBounds(10, 24, 67, 14);
 				panel_2.add(label_2);
 				
-				panel_3 = new JPanel();
-				panel_3.setLayout(null);
-				panel_3.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Per\u00EDodo", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-				panel_3.setBounds(11, 266, 554, 109);
-				panel.add(panel_3);
+				panelPeriodo = new JPanel();
+				panelPeriodo.setLayout(null);
+				panelPeriodo.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Per\u00EDodo", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+				panelPeriodo.setBounds(11, 266, 554, 109);
+				panel.add(panelPeriodo);
 				
-				textField_9 = new JTextField();
-				textField_9.setColumns(10);
-				textField_9.setBounds(51, 73, 202, 20);
-				panel_3.add(textField_9);
+				txfDia = new JTextField();
+				txfDia.setColumns(10);
+				txfDia.setBounds(51, 73, 202, 20);
+				panelPeriodo.add(txfDia);
 				
 				lblHora = new JLabel("Dia:");
 				lblHora.setForeground(Color.BLACK);
 				lblHora.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				lblHora.setBounds(10, 74, 26, 14);
-				panel_3.add(lblHora);
+				panelPeriodo.add(lblHora);
 				
-				textField_10 = new JTextField();
-				textField_10.setColumns(10);
-				textField_10.setBounds(50, 48, 203, 20);
-				panel_3.add(textField_10);
+				txfMes = new JTextField();
+				txfMes.setColumns(10);
+				txfMes.setBounds(50, 48, 203, 20);
+				panelPeriodo.add(txfMes);
 				
-				textField_11 = new JTextField();
-				textField_11.setColumns(10);
-				textField_11.setBounds(50, 23, 203, 20);
-				panel_3.add(textField_11);
+				txfAno = new JTextField();
+				txfAno.setColumns(10);
+				txfAno.setBounds(50, 23, 203, 20);
+				panelPeriodo.add(txfAno);
 				
 				lblAno = new JLabel("Ano:");
 				lblAno.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				lblAno.setBounds(10, 24, 30, 14);
-				panel_3.add(lblAno);
+				panelPeriodo.add(lblAno);
 				
 				lblMinuto = new JLabel("Hora:");
 				lblMinuto.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				lblMinuto.setBounds(286, 24, 36, 14);
-				panel_3.add(lblMinuto);
+				panelPeriodo.add(lblMinuto);
 				
 				lblMinuto_1 = new JLabel("Minuto:");
 				lblMinuto_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				lblMinuto_1.setBounds(273, 49, 49, 14);
-				panel_3.add(lblMinuto_1);
+				panelPeriodo.add(lblMinuto_1);
 				
 				lblSegundo = new JLabel("Segundo:");
 				lblSegundo.setForeground(Color.BLACK);
 				lblSegundo.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				lblSegundo.setBounds(263, 74, 61, 14);
-				panel_3.add(lblSegundo);
+				panelPeriodo.add(lblSegundo);
 				
 				lblMs = new JLabel("M\u00EAs:");
 				lblMs.setBounds(10, 49, 32, 14);
-				panel_3.add(lblMs);
+				panelPeriodo.add(lblMs);
 				lblMs.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				
-				textField_12 = new JTextField();
-				textField_12.setColumns(10);
-				textField_12.setBounds(332, 23, 202, 20);
-				panel_3.add(textField_12);
+				txfHora = new JTextField();
+				txfHora.setColumns(10);
+				txfHora.setBounds(332, 23, 202, 20);
+				panelPeriodo.add(txfHora);
 				
-				textField_13 = new JTextField();
-				textField_13.setColumns(10);
-				textField_13.setBounds(332, 48, 202, 20);
-				panel_3.add(textField_13);
+				txfMinuto = new JTextField();
+				txfMinuto.setColumns(10);
+				txfMinuto.setBounds(332, 48, 202, 20);
+				panelPeriodo.add(txfMinuto);
 				
-				textField_14 = new JTextField();
-				textField_14.setColumns(10);
-				textField_14.setBounds(332, 73, 202, 20);
-				panel_3.add(textField_14);
+				txfSegundo = new JTextField();
+				txfSegundo.setColumns(10);
+				txfSegundo.setBounds(332, 73, 202, 20);
+				panelPeriodo.add(txfSegundo);
 
 		// tem que colocar as modalidades dentro do JComboBox
 //		Connection conn = ConnectionFactory.getConnection("master", "admin", "admin");
@@ -330,6 +339,51 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				try {
+					TableReplicationDirectionDAO tableReplicationDirectionDAO = new TableReplicationDirectionDAO(conn);
+					ReplicationDirection model = new ReplicationDirection();
+					
+					if (comboBox_1.getSelectedIndex() == 0) {
+						model.setAuto_manual('a');
+					} else {
+						model.setAuto_manual('m');
+					}
+					
+					if (chckbxHabilitarEdio.isSelected()) {
+						model.setHabilitado('s');
+					} else {
+						model.setHabilitado('n');
+					}
+					
+					model.setProcesso(txfProcesso.getText());
+					model.setDuracao(Integer.parseInt(txfDuracao.getText()));
+					model.setRetencao(Integer.parseInt(txfRetencao.getText()));
+					model.setDatabase_origem(txfDbOrigem.getText());
+					model.setUsuario_origem(txfUsuarioOrigem.getText());
+					model.setSenha_origem(txfSenhaOrigem.getText());
+					model.setDatabase_destino(txfDbDestino.getText());
+					model.setUsuario_destino(txfUsuarioDestino.getText());
+					model.setSenha_destino(txfSenhaDestino.getText());
+					model.setAno(Integer.parseInt(txfAno.getText()));
+					model.setMes(Integer.parseInt(txfMes.getText()));
+					model.setDia(Integer.parseInt(txfDia.getText()));
+					model.setHora(Integer.parseInt(txfHora.getText()));
+					model.setMinuto(Integer.parseInt(txfMinuto.getText()));
+					model.setSegundo(Integer.parseInt(txfSegundo.getText()));
+					
+					conn.setAutoCommit(false);
+					TableReplicationDirectionDAO dao = new TableReplicationDirectionDAO(conn);
+					
+					dao.InsertDirecao(model);
+					
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					JOptionPane.showMessageDialog(getContentPane(), "Erro: Preencha todos os campos!");
+				}
+				
+				
 				
 				
 			}
