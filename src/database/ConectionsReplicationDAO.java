@@ -137,7 +137,7 @@ public class ConectionsReplicationDAO extends MasterDAO {
 		Set(pst_insert, 1, lo_replication.getUser());
 		Set(pst_insert, 2, lo_replication.getConnectionName());
 		Set(pst_insert, 3, lo_replication.getConnectionAddress());
-		Set(pst_insert, 4, lo_replication.getConnectionPort());
+		pst_insert.setInt(4, Integer.parseInt(lo_replication.getConnectionPort()));
 		Set(pst_insert, 5, lo_replication.getDatabaseSID());
 		Set(pst_insert, 6, lo_replication.getDatabaseType());
 		Set(pst_insert, 7, lo_replication.getDatabaseURL());
