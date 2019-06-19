@@ -49,7 +49,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 	private JLabel lblTabelaDestino;
 	private JLabel lblSalvar;
 	private JTextField txf_proccess;
-	private JFormattedTextField txf_order;
+	private JTextField txf_order;
 	private JTextField txf_source_table;
 	private JTextField txf_operation;
 	private JTextField txf_destiny_table;
@@ -158,18 +158,19 @@ public class ReplicationTableFrm extends JInternalFrame {
 				
 			}
 		});
+		txf_order = new JTextField();
 		txf_proccess.setToolTipText("");
 		txf_proccess.setBounds(122, 78, 150, 20);
 		getContentPane().add(txf_proccess);
 		txf_proccess.setColumns(10);
 		
-		try {
-			txf_order = new JFormattedTextField(maskFormatter("#######"));
-			
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+//		try {
+//			txf_order = new JFormattedTextField(maskFormatter("#######"));
+//			
+//		} catch (ParseException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 		txf_order.setColumns(10);
 		txf_order.setBounds(122, 103, 150, 20);
 		getContentPane().add(txf_order);
@@ -260,7 +261,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				TableSearchFrm table_rep_search_frm = new TableSearchFrm(ReplicationTableFrm.this);
 				table_rep_search_frm.setVisible(true);
-				
+				btnAdicionar.setEnabled(false);
 				
 			}
 		});
@@ -272,9 +273,8 @@ public class ReplicationTableFrm extends JInternalFrame {
 					
 					TableReplicationDAO tableReplicationDAO = new TableReplicationDAO(conn);
 					TbTableReplication model = new TbTableReplication();
-					model.setProcesso(txf_proccess.getText());
-					model.setOrdem(Integer.parseInt(txf_order.getText()));
-					tableReplicationDAO.Delete(tableReplicationDAO.Select(model));
+					model.setTabela_origem(txf_source_table.getText());;
+					tableReplicationDAO.Delete(model);
 					
 					txf_proccess.setText("clique...");
 					txf_order.setText("");
@@ -282,6 +282,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 					txf_destiny_table.setText("");
 					txf_key_column.setText("");
 					comboBox.setSelectedIndex(0);
+					btnAdicionar.setEnabled(true);
 					
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
