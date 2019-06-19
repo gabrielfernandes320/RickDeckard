@@ -57,6 +57,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 	private JLabel lblColunaTipo;
 	private JLabel lblColunaChave;
 	private JTextField txf_key_column;
+	private JComboBox comboBox;
 	
 	Connection conn = ConnectionFactory.getConnection("nextdb", "admin", "admin");
 
@@ -210,7 +211,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 		txf_key_column.setBounds(122, 289, 320, 20);
 		getContentPane().add(txf_key_column);
 		
-		JComboBox comboBox = new JComboBox();
+		comboBox = new JComboBox();
 		comboBox.setModel(new DefaultComboBoxModel(new String[] {"--------------------------------- Selecione--------------------------", "int", "String"}));
 		comboBox.setBounds(122, 313, 320, 22);
 		getContentPane().add(comboBox);
@@ -220,9 +221,9 @@ public class ReplicationTableFrm extends JInternalFrame {
 
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {			
-				if( (txf_proccess.getText()).isEmpty() || (txf_order.getText()).isEmpty()||
+				if( (txf_proccess.getText()) == "clique..." || (txf_order.getText()).isEmpty()||
 					(txf_source_table.getText()).isEmpty() || (txf_destiny_table.getText()).isEmpty()||
-					(txf_key_column.getText()).isEmpty()) {
+					(comboBox.getSelectedItem()) == "--------------------------------- Selecione--------------------------") {
 					JOptionPane.showMessageDialog(null,"Todos os campos devem ser preenchidos");
 				}else {
 					
@@ -237,7 +238,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 						
 						tableReplicationDAO.Insert(model);
 						
-						txf_proccess.setText("click...");
+						txf_proccess.setText("clique...");
 						txf_order.setText("");
 						txf_source_table.setText("");
 						txf_destiny_table.setText("");
@@ -257,7 +258,8 @@ public class ReplicationTableFrm extends JInternalFrame {
 
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				TableSearchFrm table_rep_search_frm = new TableSearchFrm(ReplicationTableFrm.this);
+				table_rep_search_frm.setVisible(true);
 				
 				
 			}
@@ -274,6 +276,12 @@ public class ReplicationTableFrm extends JInternalFrame {
 					model.setOrdem(Integer.parseInt(txf_order.getText()));
 					tableReplicationDAO.Delete(tableReplicationDAO.Select(model));
 					
+					txf_proccess.setText("clique...");
+					txf_order.setText("");
+					txf_source_table.setText("");
+					txf_destiny_table.setText("");
+					txf_key_column.setText("");
+					comboBox.setSelectedIndex(0);
 					
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -315,11 +323,23 @@ public class ReplicationTableFrm extends JInternalFrame {
 
 	public void Update(TbTableReplication t) {
 		txf_proccess.setText(t.getProcesso());
+	
+	}
+	
+	public void update(TbTableReplication t) {
+		txf_source_table.setText(t.getTabela_destino());
+		txf_order.setText(t.getOrdem().toString());
+		txf_source_table.setText(t.getTabela_origem());
+		txf_destiny_table.setText(t.getTabela_destino());
+		txf_key_column.setText(t.getColuna_chave());
+		
+		comboBox.setSelectedIndex(1);
+		if(t.getColuna_tipo() != comboBox.getSelectedItem()) {
+			comboBox.setSelectedIndex(2);
+		}
 	}
 	public void setPosicao() {
 		Dimension d = this.getDesktopPane().getSize();
 		this.setLocation((d.width - this.getSize().width) / 2, (d.height - this.getSize().height) /2);
 		}
 }
-
-

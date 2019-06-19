@@ -2,9 +2,17 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -16,39 +24,25 @@ import javax.swing.event.ListSelectionListener;
 
 import database.ConnectionFactory;
 import database.TableReplicationDAO;
-import database.TableReplicationExecutionDAO;
 import database.TableReplicationProcessDAO;
-import model.Graduacoes;
-import model.Modalidades;
-import model.Plano;
 import model.TbTableReplication;
 import tableModel.ProccessSearchTable;
+import tableModel.TableReplicationTableModel;
 
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.event.ActionEvent;
-import javax.swing.JLabel;
-import java.awt.SystemColor;
+public class TableSearchFrm extends JDialog {
 
-public class ProccessSearchFrm extends JDialog {
 	private JTable table;
-	private ProccessSearchTable model;
+	private TableReplicationTableModel model;
 	private String idSelecionado;
 	Connection conn = ConnectionFactory.getConnection("nextdb", "admin", "admin");
 	private static ReplicationTableFrm window;
 	private JTextField txfSearch;
-
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
-			ProccessSearchFrm dialog = new ProccessSearchFrm(window);
+			TableSearchFrm dialog = new TableSearchFrm(window);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -59,7 +53,7 @@ public class ProccessSearchFrm extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public ProccessSearchFrm(final ReplicationTableFrm window) {
+	public TableSearchFrm(final ReplicationTableFrm window) {
 		setBounds(100, 100, 471, 330);
 		getContentPane().setLayout(null);
 		{
@@ -69,7 +63,7 @@ public class ProccessSearchFrm extends JDialog {
 			{
 				buttonPane.setLayout(null);
 				
-				JLabel lblNewLabel = new JLabel("Duplo clique na linha para selecionar a modalidade desejada");
+				JLabel lblNewLabel = new JLabel("Duplo clique na linha para selecionar o item desejado");
 				lblNewLabel.setBounds(0, 9, 434, 14);
 				buttonPane.add(lblNewLabel);
 			}
@@ -80,28 +74,28 @@ public class ProccessSearchFrm extends JDialog {
 		getContentPane().add(txfSearch);
 		txfSearch.setColumns(10);
 		
-		JLabel lblModalidade = new JLabel("Processo:");
-		lblModalidade.setBounds(10, 13, 75, 17);
-		getContentPane().add(lblModalidade);
+		JLabel lblProcesso= new JLabel("Processo:");
+		lblProcesso.setBounds(10, 13, 75, 17);
+		getContentPane().add(lblProcesso);
 		
 		JButton btnAtualizar = new JButton("Pesquisar");
 		btnAtualizar.setBackground(SystemColor.menu);
-				btnAtualizar.setBounds(340, 10, 104, 23);
+		btnAtualizar.setBounds(340, 10, 104, 23);
 		getContentPane().add(btnAtualizar);
 		txfSearch.setText("");
 		JPanel painelFundo;
 
 		painelFundo = new JPanel();
-		model = new ProccessSearchTable();
+		model = new TableReplicationTableModel();
 		painelFundo.setLayout(null);
 		painelFundo.setBounds(10, 42, 434, 195);
 		getContentPane().add(painelFundo);
 		
-				JTable tabela = new JTable(model);
-				tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-				JScrollPane barraRolagem = new JScrollPane(tabela);
-				barraRolagem.setBounds(0, 0, 434, 195);
-				painelFundo.add(barraRolagem);
+		JTable tabela = new JTable(model);
+		tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane barraRolagem = new JScrollPane(tabela);
+		barraRolagem.setBounds(0, 0, 434, 195);
+		painelFundo.add(barraRolagem);
 
 		tabela.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent event) {
@@ -115,12 +109,11 @@ public class ProccessSearchFrm extends JDialog {
 		tabela.addMouseListener(new MouseAdapter(){
 		     public void mouseClicked(MouseEvent e){
 		         if (e.getClickCount() == 2){
-		            System.out.println(" double click" );
-		             TbTableReplication t = new TbTableReplication();
-		             t.setProcesso(tabela.getValueAt(tabela.getSelectedRow(), 0).toString());
-		            window.Update(t);
-		           	dispose();
-//		           	
+			            System.out.println(" double click" );
+			            TbTableReplication t = new TbTableReplication();
+			            t = (TbTableReplication) model.getValueAt(tabela.getSelectedRow(), 0);
+			            window.update(t);  
+			           	dispose();
 		            }
 		         }
 		        } );
@@ -130,8 +123,8 @@ public class ProccessSearchFrm extends JDialog {
 				zerarTodos();
 				try {
 					
-					model.addListaDeProcessos(new TableReplicationProcessDAO(conn).SelectAll(txfSearch.getText().toString()));
-				
+					model.addListaDeProcessos(new TableReplicationDAO(conn).SelectAll(txfSearch.getText().toString()));
+					
 				} catch (Exception e1) {
 					System.err.printf("Erro: %s.\n", e1.getMessage());
 				}
