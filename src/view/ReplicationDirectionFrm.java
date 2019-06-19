@@ -30,6 +30,8 @@ import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.SwingConstants;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 
@@ -100,6 +102,7 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 		btnBuscar.setBackground(new Color(240, 240, 240));
 		//btnBuscar.setIcon(new ImageIcon(ReplicationDirectionFrm.class.getResource("/view/images/localizar.png")));
 		getContentPane().add(btnBuscar);
+		btnBuscar.setEnabled(false);
 
 		btnAdicionar = new JButton("Adicionar");
 		//btnAdicionar.setIcon(new ImageIcon(ReplicationDirectionFrm.class.getResource("/view/images/adicionar.png")));
@@ -129,6 +132,8 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
+		Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
+		
 				JLabel lblProcesso = new JLabel("Processo:");
 				lblProcesso.setBounds(50, 12, 63, 14);
 				panel.add(lblProcesso);
@@ -157,6 +162,61 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				lblRetencao.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				
 				txfProcesso = new JTextField();
+				txfProcesso.addKeyListener(new KeyAdapter() {
+					@Override
+					public void keyPressed(KeyEvent e) {
+						if (e.getKeyCode() == KeyEvent.VK_F9) {
+							
+							ReplicationDirection model = new ReplicationDirection();
+							
+							model.setProcesso(txfProcesso.getText());
+							
+							try {
+								conn.setAutoCommit(false);
+								TableReplicationDirectionDAO dao = new TableReplicationDirectionDAO(conn);
+								
+								model = dao.SelectProcesso(model);
+								
+								txfProcesso.setText(model.getProcesso());
+								txfDbDestino.setText(model.getDatabase_destino());
+								txfDuracao.setText(Integer.toString(model.getDuracao()));
+								txfDbOrigem.setText(model.getDatabase_origem());
+								txfUsuarioOrigem.setText(model.getUsuario_origem());
+								txfSenhaOrigem.setText(model.getSenha_origem());
+								txfDbDestino.setText(model.getDatabase_destino());
+								txfUsuarioDestino.setText(model.getUsuario_destino());
+								txfSenhaDestino.setText(model.getSenha_destino());
+								txfRetencao.setText(Integer.toString(model.getRetencao()));
+								
+								txfAno.setText(Integer.toString(model.getAno()));
+								txfMes.setText(Integer.toString(model.getMes()));
+								txfDia.setText(Integer.toString(model.getDia()));
+								txfHora.setText(Integer.toString(model.getHora()));
+								txfMinuto.setText(Integer.toString(model.getMinuto()));
+								txfSegundo.setText(Integer.toString(model.getSegundo()));
+								
+								if (model.getAuto_manual() == 'a') {
+									comboBox_1.setSelectedIndex(0);
+								} else {
+									comboBox_1.setSelectedIndex(1);
+								}
+									
+								if (model.getHabilitado() == 's') {
+									chckbxHabilitarEdio.setSelected(true);
+								} else {
+									chckbxHabilitarEdio.setSelected(false);
+								}
+
+							} catch (SQLException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							
+							
+						}
+					}
+				});
+				
 				txfProcesso.setBounds(123, 11, 150, 20);
 				panel.add(txfProcesso);
 				txfProcesso.setColumns(10);
@@ -210,6 +270,36 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				panel_1.add(txfUsuarioOrigem);
 				
 				txfDbOrigem = new JTextField();
+				txfDbOrigem.addKeyListener(new KeyAdapter() {
+					@Override
+					public void keyPressed(KeyEvent e) {
+						if (e.getKeyCode() == KeyEvent.VK_F9) {
+							
+							ReplicationDirection model = new ReplicationDirection();
+							
+							model.setDatabase_origem(txfDbOrigem.getText());
+							
+							try {
+								conn.setAutoCommit(false);
+								TableReplicationDirectionDAO dao = new TableReplicationDirectionDAO(conn);
+								
+								model = dao.SelectDatabase(model);
+								
+								//txfUsuarioOrigem.setText(model.getUsuario_origem());
+								txfUsuarioOrigem.setText("admin");
+								txfSenhaOrigem.setText("admin");
+								txfDbOrigem.setText(model.getDatabase_origem());
+
+
+							} catch (SQLException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							
+							
+						}
+					}
+				});
 				txfDbOrigem.setColumns(10);
 				txfDbOrigem.setBounds(86, 23, 170, 20);
 				panel_1.add(txfDbOrigem);
@@ -249,6 +339,38 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				panel_2.add(txfUsuarioDestino);
 				
 				txfDbDestino = new JTextField();
+				txfDbDestino.addKeyListener(new KeyAdapter() {
+					@Override
+					public void keyPressed(KeyEvent e) {
+						if (e.getKeyCode() == KeyEvent.VK_F9) {
+							
+							Connection temp = ConnectionFactory.getConnection("nextdb", "admin", "admin");
+							
+							ReplicationDirection model = new ReplicationDirection();
+							
+							model.setDatabase_origem(txfDbDestino.getText());
+							
+							try {
+								temp.setAutoCommit(false);
+								TableReplicationDirectionDAO dao = new TableReplicationDirectionDAO(temp);
+								
+								model = dao.SelectDatabase(model);
+								
+								//txfUsuarioOrigem.setText(model.getUsuario_origem());
+								txfUsuarioDestino.setText("admin");
+								txfSenhaDestino.setText("admin");
+								txfDbDestino.setText(model.getDatabase_origem());
+
+
+							} catch (SQLException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							
+							
+						}
+					}
+				});
 				txfDbDestino.setColumns(10);
 				txfDbDestino.setBounds(86, 23, 170, 20);
 				panel_2.add(txfDbDestino);
@@ -332,7 +454,7 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				txfSegundo.setBounds(332, 73, 202, 20);
 				panelPeriodo.add(txfSegundo);
 
-		Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
+		
 
 
 		btnSalvar.addActionListener(new ActionListener() {
