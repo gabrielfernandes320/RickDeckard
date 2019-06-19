@@ -82,6 +82,25 @@ public class TableReplicationProcessDAO extends MasterDAO {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public String[] selectProcessNames() throws SQLException {
+			
+		ResultSet rst = pst_selectAll.executeQuery();	
+		ArrayList<String> list = new ArrayList<String>();
+		
+		list.add("");
+		
+		while (rst.next()) {
+			
+			list.add (rst.getString ("processo"));
+			
+		}
+		
+		String[] Process = (String[]) list.toArray (new String[list.size()]);
+		
+		return Process;
+		
+	}
 
 	@Override
 	public void Update(Object parameter) throws SQLException {

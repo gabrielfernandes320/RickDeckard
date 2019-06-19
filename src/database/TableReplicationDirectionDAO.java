@@ -7,13 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.sql.Connection;
 import model.ConectionReplication;
-import model.Usuario;
 
-public class ConectionsReplicationDAO extends MasterDAO {
+public class TableReplicationDirectionDAO extends MasterDAO {
 
-    private String is_select = "select codigo_replicacao,nome,endereco,porta,database from TB_REPLICACAO where nome = ?";
+    private String is_select = "select * from tb_replicacao_direcao where nome = ?";
     
-    private String is_selectConectionNames = "select nome from TB_REPLICACAO";
+    private String is_selectDirectionNames = "select codigo_direcao from tb_replicacao_direcao where processo = ?";
 
     private String is_insert = "INSERT INTO public.TB_REPLICACAO			"
             + "(usuario,nome," +
@@ -28,19 +27,19 @@ public class ConectionsReplicationDAO extends MasterDAO {
     private String is_delete = "DELETE FROM public.tb_replicacao WHERE nome = '1?' ";
 
     private PreparedStatement pst_select;
-    private PreparedStatement pst_selectConectionNames;
+    private PreparedStatement pst_selectDirectionNames;
     private PreparedStatement pst_insert;
     private PreparedStatement pst_delete;
     
 
     Connection io_connection;
 
-    public ConectionsReplicationDAO(Connection connection)
+    public TableReplicationDirectionDAO(Connection connection)
             throws SQLException {
         io_connection = connection;
         pst_select = connection.prepareStatement(is_select);
         pst_insert = connection.prepareStatement(is_insert);
-        pst_selectConectionNames = connection.prepareStatement(is_selectConectionNames);
+        pst_selectDirectionNames = connection.prepareStatement(is_selectDirectionNames);
         //pst_drop_role = connection.prepareStatement(is_drop_role);
         //pst_delete = connection.prepareStatement(is_delete);
     }
@@ -78,22 +77,24 @@ public class ConectionsReplicationDAO extends MasterDAO {
         return null;
     }
 
-	public String[] selectConectionNames() throws SQLException {
+	public String[] selectDirectionNames(String processo) throws SQLException {
 		
-		ResultSet rst = pst_selectConectionNames.executeQuery();	
+		pst_selectDirectionNames.setString(1, processo);
+		
+		ResultSet rst = pst_selectDirectionNames.executeQuery();	
 		ArrayList<String> list = new ArrayList<String>();
 		
 		list.add("");
 		
 		while (rst.next()) {
 			
-			list.add (rst.getString ("nome"));
+			list.add (rst.getString ("codigo_direcao"));
 			
 		}
 		
-		String[] Conections = (String[]) list.toArray (new String[list.size()]);
+		String[] Direction = (String[]) list.toArray (new String[list.size()]);
 		
-		return Conections;
+		return Direction;
 		
 	}
     
