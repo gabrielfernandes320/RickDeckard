@@ -166,7 +166,7 @@ public class ReplicationFrm extends JInternalFrame {
 				conrep.setUser("gabriel");
 				conrep.setDatabaseURL(getURL(tbIP.getText(), tbPort.getText(), tbDBname.getText()));
 				
-				Connection conn = ConnectionFactory.getConnection("nextdb", "admin", "admin");
+				Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
 				ConectionsReplicationDAO crd = null;
 				try {
 					crd = new ConectionsReplicationDAO(conn);
@@ -213,7 +213,7 @@ public class ReplicationFrm extends JInternalFrame {
 				ConectionReplication conrep = new ConectionReplication();
 				conrep.setConnectionName(tbDescription.getText());
 				
-				Connection conn = ConnectionFactory.getConnection("nextdb", "admin", "admin");
+				Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
 				ConectionsReplicationDAO crd = null;
 				try {
 					crd = new ConectionsReplicationDAO(conn);
@@ -247,7 +247,7 @@ public class ReplicationFrm extends JInternalFrame {
 				ConectionReplication conrep = new ConectionReplication();
 				conrep.setConnectionName(tbDescription.getText());
 				
-				Connection conn = ConnectionFactory.getConnection("nextdb", "admin", "admin");
+				Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
 				ConectionsReplicationDAO crd = null;
 				try {
 					crd = new ConectionsReplicationDAO(conn);
