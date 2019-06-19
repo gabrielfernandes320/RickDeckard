@@ -427,8 +427,8 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				ProccessSearchFrm searchForm = new ProccessSearchFrm(ReplicationDirectionFrm.this);
-				searchForm.setVisible(true);	
+				//ProccessSearchFrm searchForm = new ProccessSearchFrm(ReplicationDirectionFrm.this);
+				//searchForm.setVisible(true);	
 				
 			}
 		});
