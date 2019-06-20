@@ -132,7 +132,7 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
+		Connection conn = ConnectionFactory.getConnection("nextDB", "admin", "admin");
 		
 				JLabel lblProcesso = new JLabel("Processo:");
 				lblProcesso.setBounds(50, 12, 63, 14);

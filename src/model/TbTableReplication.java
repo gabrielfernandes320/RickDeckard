@@ -5,7 +5,7 @@ public class TbTableReplication {
 	private int codigo_replicacao;
 	private String usuario;
 	private String processo;
-	private Integer ordem;
+	private int ordem;
 	private String tabela_origem;
 	private String tabela_destino;
 	private String coluna_tipo;
@@ -46,10 +46,10 @@ public class TbTableReplication {
 	public void setProcesso(String processo) {
 		this.processo = processo;
 	}
-	public Integer getOrdem() {
+	public int getOrdem() {
 		return ordem;
 	}
-	public void setOrdem(Integer ordem) {
+	public void setOrdem(int ordem) {
 		this.ordem = ordem;
 	}
 	public String getTabela_origem() {

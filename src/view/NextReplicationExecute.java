@@ -37,23 +37,23 @@ import model.Usuario;
 public class NextReplicationExecute {
 
 	private NextWindowReplication io_window;
-	private ConectionReplication origin_connection;
-	private ConectionReplication destiny_connection;
+	private ConectionReplication origin_connection = null;
+	private ConectionReplication destiny_connection = null;
 	private Connection conn;
-	private Connection conn_origin;
-	private Connection conn_destiny;
+	private Connection conn_origin = null;
+	private Connection conn_destiny = null;
 
-	private int alunos = 0 ;
+	private int alunos = 0;
 	private int planos = 0;
-	private int graduacoes= 0;
-	private int modalidades= 0;
-	private int usuarios= 0;
-	private int assiduidade= 0;
-	private int matriculas= 0;
-	private int matriculas_modalidades= 0;
-	private int cidades= 0;
-	private int faturas_matriculas= 0;
-	
+	private int graduacoes = 0;
+	private int modalidades = 0;
+	private int usuarios = 0;
+	private int assiduidade = 0;
+	private int matriculas = 0;
+	private int matriculas_modalidades = 0;
+	private int cidades = 0;
+	private int faturas_matriculas = 0;
+
 	private int progress = 0;
 	private int progressPerTable;
 	private int lines_changed;
@@ -65,202 +65,239 @@ public class NextReplicationExecute {
 		io_window.getProcess();
 
 		// Instancia os DAO de controle.
-		conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
+		SetConections();
+
+	}
+
+	public void SetConections() throws SQLException {
+
+		conn = ConnectionFactory.getConnection("nextDB", "admin", "admin");
 		TableReplicationDirectionDAO DirectionDAO = new TableReplicationDirectionDAO(conn);
 		ConectionsReplicationDAO ConnectionsDAO = new ConectionsReplicationDAO(conn);
 
 		// Guardo a conexão.
-		origin_connection.setDatabaseSID(DirectionDAO.selectOrigem(io_window.getDirection()));
-		origin_connection = (ConectionReplication) ConnectionsDAO.Select(origin_connection);
+		String DB_Origem = DirectionDAO.selectOrigem(io_window.getDirection());
+		origin_connection = (ConectionReplication) ConnectionsDAO.Select(DB_Origem);
 
-		destiny_connection.setDatabaseSID(DirectionDAO.selectDestino(io_window.getDirection()));
-		destiny_connection = (ConectionReplication) ConnectionsDAO.Select(destiny_connection);
+		String DB_Destino = DirectionDAO.selectDestino(io_window.getDirection());
+		destiny_connection = (ConectionReplication) ConnectionsDAO.Select(DB_Destino);
 
 		conn_origin = ConnectionFactory.getConnection(origin_connection.getConnectionAddress(),
 				origin_connection.getConnectionPort(), origin_connection.getDatabaseSID(), "admin", "admin");
 		conn_destiny = ConnectionFactory.getConnection(destiny_connection.getConnectionAddress(),
 				destiny_connection.getConnectionPort(), destiny_connection.getDatabaseSID(), "admin", "admin");
+
 	}
+	
+	boolean matarThread = false;
 
 	public void ReplicacaoIniciar() {
-		
+
 		new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
+				
+				while (!matarThread) {
 
-				while (!Thread.currentThread().isInterrupted() ) {
-					
 					try {
-							
+
 						lines_changed = 0;
-						
+
 						TableReplicationDAO ReplicationDAO = new TableReplicationDAO(conn);
-												
-						for(int row = 0; ReplicationDAO.Select(io_window.getProcess(), row) != null; row++) {
+					
+						System.out.println("ëstive aqui 2 ");
+						
+						int LastOrdem = ReplicationDAO.SelectLastOrdem(io_window.getProcess()).getOrdem();
+						
+						int row = 0;
+						
+						while (row <= LastOrdem) {
 							
-							switch(ReplicationDAO.Select(io_window.getProcess(), row).getTabela_destino()){
-								
-							case "alunos":
+							String tabela = ReplicationDAO.Select(io_window.getProcess(), row).getTabela_destino();
+
+							if (tabela.equals("alunos")) {
 								
 								alunos++;
 								progress++;
-								break;
 								
-							case "planos":
+								System.out.println("ëstive aqui 3 ");
+								
+							}
+														
+							else if (tabela.equals("planos")) {
 								
 								planos++;
 								progress++;
-								break;
 								
-							case "graduacoes":
+							}
+							
+							else if (tabela.equals("graduacoes")) {
 								
 								graduacoes++;
 								progress++;
-								break;
 								
-							case "modalidades":
+							}
+							
+							else if (tabela.equals("modalidades")) {
 								
 								modalidades++;
 								progress++;
-								break;
 								
-							case "usuarios":
+							}
+							
+							else if (tabela.equals("usuarios")) {
 								
 								usuarios++;
 								progress++;
-								break;
 								
-							case "assiduidade":
+							}
+							
+							
+							else if (tabela.equals("assiduidade")) {
 								
 								assiduidade++;
 								progress++;
-								break;		
 								
-							case "matriculas":
+							}
+							
+							else if (tabela.equals("matriculas")) {
 								
 								matriculas++;
 								progress++;
-								break;
-						
-							case "matriculas_modalidades":
+								
+							}
+							
+							else if (tabela.equals("matriculas_modalidades")) {
 								
 								matriculas_modalidades++;
 								progress++;
-								break;
-								
-							case "faturas_matriculas:":
-								faturas_matriculas++;
-								progress++;
-								break;
-								
-							case "cidades":
-								cidades++;
-								progress++;
-								break;
-							default:								
 								
 							}
-																																								
+							
+							else if (tabela.equals("faturas_matriculas")) {
+								
+								faturas_matriculas++;
+								progress++;
+								
+							}
+							
+							else if (tabela.equals("cidades")) {
+								
+								cidades++;
+								progress++;
+								
+							}					
+							
+							row++;
+							
 						}
-																		
-						progressPerTable = 100/progress;	
+						
+						System.out.println("ëstive aqui");
+						
+						JOptionPane.showMessageDialog(io_window, "Iniciando!", "Alerta:",
+								JOptionPane.INFORMATION_MESSAGE);
+
+						progressPerTable = 100 / progress;
 						progress = 0;
 						io_window.setProgress(progress);
-						
-						if(alunos != 0) {
-							
+
+						if (alunos != 0) {
+
 							lines_changed = lines_changed + ReplicateStudents();
-							
+							progress = progress + progressPerTable;
 							io_window.setProgress(progress);
-							
+
 						}
-						
-						if(planos != 0) {
-							
+
+						if (planos != 0) {
+
 							lines_changed = lines_changed + ReplicatePlans();
 							progress = progress + progressPerTable;
 							io_window.setProgress(progress);
-							
+
 						}
-						
-						if(graduacoes != 0) {
-							
+
+						if (graduacoes != 0) {
+
 							lines_changed = lines_changed + ReplicateGraduation();
 							progress = progress + progressPerTable;
 							io_window.setProgress(progress);
-							
+
 						}
-						
-						if(modalidades != 0) {
-							
+
+						if (modalidades != 0) {
+
 							lines_changed = lines_changed + ReplicateModality();
 							progress = progress + progressPerTable;
 							io_window.setProgress(progress);
-							
+
 						}
-						
-						if(usuarios != 0) {
-							
+
+						if (usuarios != 0) {
+
 							lines_changed = lines_changed + ReplicateUsers();
 							progress = progress + progressPerTable;
 							io_window.setProgress(progress);
-							
+
 						}
-						
-						if(assiduidade != 0) {
-							
+
+						if (assiduidade != 0) {
+
 							lines_changed = lines_changed + ReplicateAssiduidade();
 							progress = progress + progressPerTable;
 							io_window.setProgress(progress);
-							
+
 						}
-						
-						if(matriculas != 0) {
-							
+
+						if (matriculas != 0) {
+
 							lines_changed = lines_changed + ReplicateMatriculas();
 							progress = progress + progressPerTable;
 							io_window.setProgress(progress);
-							
+
 						}
-						
-						if(matriculas_modalidades != 0) {
-							
+
+						if (matriculas_modalidades != 0) {
+
 							lines_changed = lines_changed + ReplicateMatriculas_modalidades();
 							progress = progress + progressPerTable;
 							io_window.setProgress(progress);
-							
+
 						}
-						
-						if(faturas_matriculas != 0) {
-							
+
+						if (faturas_matriculas != 0) {
+
 							lines_changed = lines_changed + ReplicateFaturas_matriculas();
 							progress = progress + progressPerTable;
 							io_window.setProgress(progress);
-							
+
 						}
-						
-						if(cidades != 0) {
-							
+
+						if (cidades != 0) {
+
 							lines_changed = lines_changed + ReplicateCidade();
 							progress = progress + progressPerTable;
 							io_window.setProgress(progress);
-							
+
 						}
+
+						JOptionPane.showMessageDialog(io_window, "Sucesso!", "Alerta:",
+								JOptionPane.INFORMATION_MESSAGE);
 						
 						
-						JOptionPane.showMessageDialog(io_window, "Sucesso!", "Alerta:", JOptionPane.INFORMATION_MESSAGE);				
-						
+						matarThread = true;
+
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
-				}			
+
+				}
 			}
-			
+
 		}).start();
-		
+
 	}
 
 	public int ReplicateStudents() throws SQLException {
@@ -272,13 +309,16 @@ public class NextReplicationExecute {
 
 		int Rows = 0;
 
-		while (List.get(Rows) != null) {
+		for (Aluno aluno : List) {
 
+			conn_destiny.setAutoCommit(false);
+			
 			destiny_dao.Insert(List.get(Rows));
 
 			Rows++;
 
 		}
+		
 
 		return Rows;
 
@@ -367,7 +407,7 @@ public class NextReplicationExecute {
 		return Rows;
 
 	}
-	
+
 	public int ReplicateAssiduidade() throws SQLException {
 
 		AssiduidadeDAO origin_dao = new AssiduidadeDAO(conn_origin);
@@ -388,7 +428,7 @@ public class NextReplicationExecute {
 		return Rows;
 
 	}
-	
+
 	public int ReplicateMatriculas() throws SQLException {
 
 		MatriculaDAO origin_dao = new MatriculaDAO(conn_origin);
@@ -451,26 +491,28 @@ public class NextReplicationExecute {
 		return Rows;
 
 	}
-	
+
 	public int ReplicateCidade() throws SQLException {
 
 		CitiesDAO origin_dao = new CitiesDAO(conn_origin);
 		CitiesDAO destiny_dao = new CitiesDAO(conn_destiny);
 
-		List<Cidade> List = origin_dao.SelectAllP(1);
+		List<Cidade> List = origin_dao.SelectAllP();
 
 		int Rows = 0;
 
-		while (List.get(Rows) != null) {
-
-			destiny_dao.Insert(List.get(Rows));
+		conn_destiny.setAutoCommit(false);
+		
+		for (Cidade cidade : List) {
+											
+			destiny_dao.Insert(cidade);
 
 			Rows++;
-
-		}
+			
+		}		
 
 		return Rows;
 
 	}
-	
+
 }

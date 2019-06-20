@@ -95,7 +95,7 @@ public class ConectionsReplicationDAO extends MasterDAO {
             connRep.setConnectionName(rst.getString("nome"));
             connRep.setConnectionAddress(rst.getString("endereco"));
             connRep.setConnectionPort(rst.getString("porta"));
-            connRep.setDatabaseSID("database");
+            connRep.setDatabaseSID(rst.getString("database"));
 
             return connRep;
 

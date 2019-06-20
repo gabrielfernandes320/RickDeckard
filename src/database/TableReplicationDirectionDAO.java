@@ -23,9 +23,9 @@ public class TableReplicationDirectionDAO extends MasterDAO {
    
     private String is_selectDbOrigem = "select * from tb_replicacao where database like ?";
     
-    private String is_selectOrigem = "select database_origem from tb_replicacao_direcao where nome = ?";
+    private String is_selectOrigem = "select database_origem from tb_replicacao_direcao where codigo_direcao = ?";
     
-    private String is_selectDestino = "select database_destino from tb_replicacao_direcao where nome = ?";
+    private String is_selectDestino = "select database_destino from tb_replicacao_direcao where codigo_direcao = ?";
    
     private String is_selectProcesso = "select * from tb_replicacao_direcao where processo like ?";
     
@@ -235,25 +235,33 @@ public class TableReplicationDirectionDAO extends MasterDAO {
 		
 	}
     
-	public String selectOrigem(String nome) throws SQLException {
+	public String selectOrigem(int codigo) throws SQLException {
+
+		pst_selectOrigem.setInt(1, codigo);
+
+		ResultSet rst = pst_selectOrigem.executeQuery();
+
+		rst.next();
 		
-		pst_selectOrigem.setString(1, nome);
-		
-		ResultSet rst = pst_selectOrigem.executeQuery();	
-		
-		String origem = rst.getString ("database_origem");
+		String origem  = rst.getString("database_origem");
 		
 		return origem;
-		
+
 	}
 	
-	public String selectDestino(String nome) throws SQLException {
+	public String selectDestino(int codigo) throws SQLException {
 		
-		pst_selectDestino.setString(1, nome);
+		pst_selectDestino.setInt(1, codigo);
 		
 		ResultSet rst = pst_selectDestino.executeQuery();	
 		
-		String destino = rst.getString ("database_destino");
+		String destino = null;
+		
+		while(rst.next()) {
+			
+			destino = rst.getString ("database_destino");
+			
+		}
 		
 		return destino;
 		

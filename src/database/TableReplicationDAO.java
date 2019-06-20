@@ -15,8 +15,9 @@ import model.Usuario;
 public class TableReplicationDAO extends MasterDAO {
 	
 	private String is_selectAll = "select * from tb_replicacao_tabela";
-	private String is_select = "select * from tb_replicacao_tabela where processo like ?, ordem like ? ";
+	private String is_select = "select tabela_destino, ordem from tb_replicacao_tabela where processo = ? and ordem = ? ";
 	private String is_selecT = "select * from tb_replicacao_tabela where processo like ? ";
+	private String is_selectMax = "select max(ordem) from tb_replicacao_tabela ";
 	private String is_Select = "select * from tb_replicacao_tabela  where tabela_origem =? and ordem =?";
 	private String is_insert = "INSERT INTO tb_replicacao_tabela			"
 								+ "(							"
@@ -46,6 +47,7 @@ public class TableReplicationDAO extends MasterDAO {
 	private PreparedStatement pst_insert;
 	private PreparedStatement pst_update;
 	private PreparedStatement pst_delete;
+	private PreparedStatement pst_selectMax;
 	
 	Connection io_connection;
 	
@@ -58,6 +60,7 @@ public class TableReplicationDAO extends MasterDAO {
 		pst_insert = connection.prepareStatement(is_insert);
 		pst_update = connection.prepareStatement(is_update);
 		pst_delete = connection.prepareStatement(is_delete);
+		pst_selectMax = connection.prepareStatement(is_selectMax);
 	}
 	
 public Object select(Object parameter) throws SQLException {
@@ -114,8 +117,23 @@ public Object select(Object parameter) throws SQLException {
 		
 		while (rst.next()) {
 			
-			model.setOrdem(rst.getInt("ordem"));
+			model.setOrdem(order);
 			model.setTabela_destino(rst.getString("tabela_destino"));
+			
+		}
+		
+		return model;
+	}
+	
+	public TbTableReplication SelectLastOrdem(String parameter) throws SQLException {
+		
+		TbTableReplication model = new TbTableReplication();
+				
+		ResultSet rst = pst_selectMax.executeQuery();
+		
+		while (rst.next()) {
+			
+			model.setOrdem(rst.getInt("max"));
 			
 		}
 		

@@ -2,6 +2,7 @@ package view;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -22,7 +23,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
-public class NextWindowReplication<E> extends JInternalFrame {
+@SuppressWarnings("serial")
+public class NextWindowReplication<E> extends JInternalFrame implements ActionListener{
 
 	private JLabel origemLbl;
 	private JLabel destinoLbl;
@@ -33,7 +35,7 @@ public class NextWindowReplication<E> extends JInternalFrame {
 	private JTextField txfErros;
 	private JComboBox<E> processCmb;
 	private JComboBox<E> directionCmb;
-	private JProgressBar pbbPrincipal;
+	private JProgressBar pbbPrincipal = new JProgressBar();
 	private JProgressBar pbbIndeterminada;
 	private int progresso;
 	private JButton btnReplicar;
@@ -95,12 +97,11 @@ public class NextWindowReplication<E> extends JInternalFrame {
 		btnReplicar.setBackground(SystemColor.menu);
 		getContentPane().add(btnReplicar);
 
-		JProgressBar progressBar = new JProgressBar();
-		progressBar.setBounds(140, 265, 216, 31);
-		progressBar.setStringPainted(true);
-		getContentPane().add(progressBar);
+		pbbPrincipal.setBounds(140, 265, 216, 31);
+		pbbPrincipal.setStringPainted(true);
+		getContentPane().add(pbbPrincipal);
 
-		Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
+		Connection conn = ConnectionFactory.getConnection("nextDB", "admin", "admin");
 
 		JLabel lblProcesso = new JLabel("Processo:");
 		lblProcesso.setBounds(10, 11, 96, 17);
@@ -110,6 +111,7 @@ public class NextWindowReplication<E> extends JInternalFrame {
 		processCmb = new JComboBox();
 		processCmb.setBounds(82, 11, 120, 20);
 		processCmb.setModel(new DefaultComboBoxModel(loadProcessComboBox()));
+		processCmb.addActionListener(this);
 		getContentPane().add(processCmb);
 
 		JLabel lblDireo = new JLabel("Dire\u00E7\u00E3o:");
@@ -119,7 +121,6 @@ public class NextWindowReplication<E> extends JInternalFrame {
 
 		directionCmb = new JComboBox();
 		directionCmb.setBounds(82, 39, 120, 20);
-		directionCmb.setModel(new DefaultComboBoxModel(loadDirectionsComboBox()));
 		getContentPane().add(directionCmb);
 
 		origemLbl = new JLabel("");
@@ -136,44 +137,57 @@ public class NextWindowReplication<E> extends JInternalFrame {
 
 	}
 
-
-
-	String[] loadDirectionsComboBox() throws SQLException {
-
-		Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
-
-		TableReplicationDirectionDAO dao = new TableReplicationDirectionDAO(conn);
-		String[] Directions = dao.selectDirectionNames(processCmb.getSelectedItem().toString());
-
-		return Directions;
-
-	}
-
+    public void actionPerformed(ActionEvent e)
+    {
+    	
+        try {
+        	directionCmb.setModel(new DefaultComboBoxModel(loadDirectionsComboBox()));
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        
+    }
+	
+	
 	String[] loadProcessComboBox() throws SQLException {
 
-		Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
+		Connection conn = ConnectionFactory.getConnection("nextDB", "admin", "admin");
 
 		TableReplicationProcessDAO dao = new TableReplicationProcessDAO(conn);
 		String[] Process = dao.selectProcessNames();
-
+				
 		return Process;
 
+	}
+	
+	String[] loadDirectionsComboBox() throws SQLException {
+
+		Connection conn = ConnectionFactory.getConnection("nextDB", "admin", "admin");
+
+		TableReplicationDirectionDAO dao = new TableReplicationDirectionDAO(conn);
+					
+		String [] Directions = dao.selectDirectionNames(processCmb.getSelectedItem().toString());
+						
+		return Directions;
+		
 	}
 
 	public void UpdateFields() throws SQLException {
 
-		Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
+		Connection conn = ConnectionFactory.getConnection("nextDB", "admin", "admin");
 
 		TableReplicationDirectionDAO directionDAO = new TableReplicationDirectionDAO(conn);
 
-		origemLbl.setText(directionDAO.selectOrigem(directionCmb.getSelectedItem().toString()));
-		destinoLbl.setText(directionDAO.selectDestino(directionCmb.getSelectedItem().toString()));
+		origemLbl.setText(directionDAO.selectOrigem(Integer.parseInt(directionCmb.getSelectedItem().toString())));
+		destinoLbl.setText(directionDAO.selectDestino(Integer.parseInt(directionCmb.getSelectedItem().toString())));
 
 	}
 
-	public String getDirection() {
+	public int getDirection() {
 		
-		return directionCmb.getSelectedItem().toString();
+		Integer result = Integer.valueOf(directionCmb.getSelectedItem().toString());
+		return result;
 		
 	}
 	
@@ -203,5 +217,7 @@ public class NextWindowReplication<E> extends JInternalFrame {
 		
 		
 	}
+
+
 	
 }

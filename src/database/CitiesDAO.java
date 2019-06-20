@@ -34,14 +34,13 @@ public class CitiesDAO extends MasterDAO {
 		io_connection = connection;
 		pst_selectAll = connection.prepareStatement(is_selectAll);
 		pst_insert = connection.prepareStatement(is_insert);
+		pst_selectAllPesquisa = connection.prepareStatement(is_selectAll);
 
 	}
 
-	public List<Cidade> SelectAllP(final int pesquisa) throws SQLException {
+	public List<Cidade> SelectAllP(  ) throws SQLException {
 		
 		List<Cidade> arlCidade = new ArrayList<Cidade>();
-
-		Set(pst_selectAllPesquisa, 1, pesquisa);
 
 		ResultSet rst = pst_selectAllPesquisa.executeQuery();
 

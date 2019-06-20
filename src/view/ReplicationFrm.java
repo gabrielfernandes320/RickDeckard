@@ -166,7 +166,7 @@ public class ReplicationFrm extends JInternalFrame {
 				conrep.setUser("gabriel");
 				conrep.setDatabaseURL(getURL(tbIP.getText(), tbPort.getText(), tbDBname.getText()));
 				
-				Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
+				Connection conn = ConnectionFactory.getConnection("nextDB", "admin", "admin");
 				ConectionsReplicationDAO crd = null;
 				try {
 					crd = new ConectionsReplicationDAO(conn);
