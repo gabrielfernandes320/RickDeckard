@@ -88,7 +88,7 @@ public class NextReplicationExecute {
 				destiny_connection.getConnectionPort(), destiny_connection.getDatabaseSID(), "admin", "admin");
 
 	}
-	
+
 	boolean matarThread = false;
 
 	public void ReplicacaoIniciar() {
@@ -97,7 +97,7 @@ public class NextReplicationExecute {
 
 			@Override
 			public void run() {
-				
+
 				while (!matarThread) {
 
 					try {
@@ -105,96 +105,95 @@ public class NextReplicationExecute {
 						lines_changed = 0;
 
 						TableReplicationDAO ReplicationDAO = new TableReplicationDAO(conn);
-					
+
 						System.out.println("ëstive aqui 2 ");
-						
+
 						int LastOrdem = ReplicationDAO.SelectLastOrdem(io_window.getProcess()).getOrdem();
-						
+
 						int row = 0;
-						
+
 						while (row <= LastOrdem) {
-							
+
 							String tabela = ReplicationDAO.Select(io_window.getProcess(), row).getTabela_destino();
 
 							if (tabela.equals("alunos")) {
-								
+
 								alunos++;
 								progress++;
-								
+
 								System.out.println("ëstive aqui 3 ");
-								
+
 							}
-														
+
 							else if (tabela.equals("planos")) {
-								
+
 								planos++;
 								progress++;
-								
+
 							}
-							
+
 							else if (tabela.equals("graduacoes")) {
-								
+
 								graduacoes++;
 								progress++;
-								
+
 							}
-							
+
 							else if (tabela.equals("modalidades")) {
-								
+
 								modalidades++;
 								progress++;
-								
+
 							}
-							
+
 							else if (tabela.equals("usuarios")) {
-								
+
 								usuarios++;
 								progress++;
-								
+
 							}
-							
-							
+
 							else if (tabela.equals("assiduidade")) {
-								
+
 								assiduidade++;
 								progress++;
-								
+
 							}
-							
+
 							else if (tabela.equals("matriculas")) {
-								
+
 								matriculas++;
 								progress++;
-								
+
 							}
-							
+
 							else if (tabela.equals("matriculas_modalidades")) {
-								
+
 								matriculas_modalidades++;
 								progress++;
-								
+
 							}
-							
+
 							else if (tabela.equals("faturas_matriculas")) {
-								
+
 								faturas_matriculas++;
 								progress++;
-								
+
 							}
-							
+
 							else if (tabela.equals("cidades")) {
-								
+
 								cidades++;
 								progress++;
-								
-							}					
-							
+
+							}
+
 							row++;
-							
+
 						}
-						
+
 						System.out.println("ëstive aqui");
-						
+
 						JOptionPane.showMessageDialog(io_window, "Iniciando!", "Alerta:",
 								JOptionPane.INFORMATION_MESSAGE);
 
@@ -284,8 +283,7 @@ public class NextReplicationExecute {
 
 						JOptionPane.showMessageDialog(io_window, "Sucesso!", "Alerta:",
 								JOptionPane.INFORMATION_MESSAGE);
-						
-						
+
 						matarThread = true;
 
 					} catch (SQLException e) {
@@ -309,16 +307,15 @@ public class NextReplicationExecute {
 
 		int Rows = 0;
 
+		conn_destiny.setAutoCommit(false);
+
 		for (Aluno aluno : List) {
 
-			conn_destiny.setAutoCommit(false);
-			
 			destiny_dao.Insert(List.get(Rows));
 
 			Rows++;
 
 		}
-		
 
 		return Rows;
 
@@ -333,7 +330,9 @@ public class NextReplicationExecute {
 
 		int Rows = 0;
 
-		while (List.get(Rows) != null) {
+		conn_destiny.setAutoCommit(false);
+
+		for (Usuario usuario : List) {
 
 			destiny_dao.Insert(List.get(Rows));
 
@@ -354,7 +353,11 @@ public class NextReplicationExecute {
 
 		int Rows = 0;
 
-		while (List.get(Rows) != null) {
+		conn_destiny.setAutoCommit(false);
+
+		for (Plano plano : List)
+
+		{
 
 			destiny_dao.Insert(List.get(Rows));
 
@@ -375,7 +378,9 @@ public class NextReplicationExecute {
 
 		int Rows = 0;
 
-		while (List.get(Rows) != null) {
+		conn_destiny.setAutoCommit(false);
+
+		for (Modalidades modalidades : List) {
 
 			destiny_dao.Insert(List.get(Rows));
 
@@ -396,7 +401,9 @@ public class NextReplicationExecute {
 
 		int Rows = 0;
 
-		while (List.get(Rows) != null) {
+		conn_destiny.setAutoCommit(false);
+
+		for (Graduacoes graduacoes : List) {
 
 			destiny_dao.Insert(List.get(Rows));
 
@@ -417,8 +424,9 @@ public class NextReplicationExecute {
 
 		int Rows = 0;
 
-		while (List.get(Rows) != null) {
+		conn_destiny.setAutoCommit(false);
 
+		for (Assiduidade assiduidade : List) {
 			destiny_dao.Insert(List.get(Rows));
 
 			Rows++;
@@ -438,7 +446,9 @@ public class NextReplicationExecute {
 
 		int Rows = 0;
 
-		while (List.get(Rows) != null) {
+		conn_destiny.setAutoCommit(false);
+
+		for (Matricula matricula : List) {
 
 			destiny_dao.Insert(List.get(Rows));
 
@@ -459,7 +469,9 @@ public class NextReplicationExecute {
 
 		int Rows = 0;
 
-		while (List.get(Rows) != null) {
+		conn_destiny.setAutoCommit(false);
+
+		for (Matricula_Modalidade matricula_Modalidade : List) {
 
 			destiny_dao.Insert(List.get(Rows));
 
@@ -480,7 +492,9 @@ public class NextReplicationExecute {
 
 		int Rows = 0;
 
-		while (List.get(Rows) != null) {
+		conn_destiny.setAutoCommit(false);
+
+		for (Invoice invoice : List) {
 
 			destiny_dao.Insert(List.get(Rows));
 
@@ -502,14 +516,14 @@ public class NextReplicationExecute {
 		int Rows = 0;
 
 		conn_destiny.setAutoCommit(false);
-		
+
 		for (Cidade cidade : List) {
-											
+
 			destiny_dao.Insert(cidade);
 
 			Rows++;
-			
-		}		
+
+		}
 
 		return Rows;
 
