@@ -17,7 +17,7 @@ public class MatriculaDAO extends MasterDAO{
 	
 	private String is_insert = "INSERT INTO Matriculas"
 			+ " ( codigo_matricula, codigo_aluno, data_matricula, dia_vencimento, data_encerramento )"
-			+ " VALUES ( DEFAULT, ?, ?, ?, ? )";
+			+ " VALUES ( ?, ?, ?, ?, ? )";
 	
 	private String is_select = "select * from matriculas where codigo_aluno = ?";
 	
@@ -60,14 +60,15 @@ public class MatriculaDAO extends MasterDAO{
 		
 		Matricula lo_matricula = (Matricula)parameter;
 		
-		Set(pst_insert, 1, lo_matricula.getCodigo_aluno());
-		Set(pst_insert, 2, lo_matricula.getData_matricula());
-		Set(pst_insert, 3, lo_matricula.getDia_vencimento());
+		Set(pst_insert, 1, lo_matricula.getCodigo_matricula());
+		Set(pst_insert, 2, lo_matricula.getCodigo_aluno());
+		Set(pst_insert, 3, lo_matricula.getData_matricula());
+		Set(pst_insert, 4, lo_matricula.getDia_vencimento());
 		
 		if (lo_matricula.getData_encerramento() != null) {
-			Set(pst_insert, 4, lo_matricula.getData_encerramento());
+			Set(pst_insert, 5, lo_matricula.getData_encerramento());
 		} else {
-			Set(pst_insert, 4, null);
+			Set(pst_insert, 5, null);
 		}
 		
 		

@@ -34,7 +34,7 @@ public class TableSearchFrm extends JDialog {
 	private JTable table;
 	private TableReplicationTableModel model;
 	private String idSelecionado;
-	Connection conn = ConnectionFactory.getConnection("nextdb", "admin", "admin");
+	Connection conn = ConnectionFactory.getConnection("nextDB", "admin", "admin");
 	private static ReplicationTableFrm window;
 	private JTextField txfSearch;
 	/**

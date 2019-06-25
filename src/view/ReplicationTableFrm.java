@@ -60,7 +60,7 @@ public class ReplicationTableFrm extends JInternalFrame {
 	private JComboBox comboBox;
 	private boolean isUpdate = false;
 	
-	Connection conn = ConnectionFactory.getConnection("nextdb", "admin", "admin");
+	Connection conn = ConnectionFactory.getConnection("nextDB", "admin", "admin");
 
 
 	/**

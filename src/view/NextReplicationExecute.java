@@ -2,6 +2,8 @@ package view;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,7 @@ import database.ModalidadesDAO;
 import database.PlanosDAO;
 import database.TableReplicationDAO;
 import database.TableReplicationDirectionDAO;
+import database.TableReplicationExecutionDAO;
 import database.TableReplicationProcessDAO;
 import database.UsuarioDAO;
 import model.Aluno;
@@ -33,6 +36,7 @@ import model.Matricula_Modalidade;
 import model.Modalidades;
 import model.Plano;
 import model.Usuario;
+import model.tbReplicacaoHistorico;
 
 public class NextReplicationExecute {
 
@@ -72,6 +76,7 @@ public class NextReplicationExecute {
 	public void SetConections() throws SQLException {
 
 		conn = ConnectionFactory.getConnection("nextDB", "admin", "admin");
+		conn.setAutoCommit(false);
 		TableReplicationDirectionDAO DirectionDAO = new TableReplicationDirectionDAO(conn);
 		ConectionsReplicationDAO ConnectionsDAO = new ConectionsReplicationDAO(conn);
 
@@ -102,11 +107,20 @@ public class NextReplicationExecute {
 
 					try {
 
+						tbReplicacaoHistorico historico = new tbReplicacaoHistorico();
+
+						historico.setInicio_data_hora(new Timestamp(System.currentTimeMillis()));
+						historico.setProcesso(io_window.getProcess());
+						historico.setDatabase_origem(origin_connection.getDatabaseSID());
+						historico.setDatabase_destino(destiny_connection.getDatabaseSID());
+						historico.setUsuario("admin");
+						historico.setUsuario_origem("admin");
+						historico.setUsuario_destino("admin");
+						historico.setOcorrencia("Tabelas copiadas:");
+
 						lines_changed = 0;
 
 						TableReplicationDAO ReplicationDAO = new TableReplicationDAO(conn);
-
-						System.out.println("ëstive aqui 2 ");
 
 						int LastOrdem = ReplicationDAO.SelectLastOrdem(io_window.getProcess()).getOrdem();
 
@@ -116,75 +130,94 @@ public class NextReplicationExecute {
 
 							String tabela = ReplicationDAO.Select(io_window.getProcess(), row).getTabela_destino();
 
-							if (tabela.equals("alunos")) {
+							if (tabela.equals("alunos") || tabela.equals("Alunos")) {
 
-								alunos++;
+								alunos = row;
 								progress++;
 
-								System.out.println("ëstive aqui 3 ");
+								historico.setOcorrencia(historico.getOcorrencia() + "/Alunos");
 
 							}
 
-							else if (tabela.equals("planos")) {
+							else if (tabela.equals("planos") || tabela.equals("Planos")) {
 
-								planos++;
+								planos = row;
 								progress++;
+
+								historico.setOcorrencia(historico.getOcorrencia() + "/Planos");
 
 							}
 
-							else if (tabela.equals("graduacoes")) {
+							else if (tabela.equals("graduacoes") || tabela.equals("Graduacoes")) {
 
-								graduacoes++;
+								graduacoes = row;
 								progress++;
+
+								historico.setOcorrencia(historico.getOcorrencia() + "/Graduacoes");
 
 							}
 
-							else if (tabela.equals("modalidades")) {
+							else if (tabela.equals("modalidades") || tabela.equals("Modalidades")) {
 
-								modalidades++;
+								modalidades = row;
 								progress++;
+
+								historico.setOcorrencia(historico.getOcorrencia() + "/Modalidades");
 
 							}
 
-							else if (tabela.equals("usuarios")) {
+							else if (tabela.equals("usuarios") || tabela.equals("Usuarios")) {
 
-								usuarios++;
+								usuarios = row;
 								progress++;
+
+								historico.setOcorrencia(historico.getOcorrencia() + "/Usuarios");
 
 							}
 
-							else if (tabela.equals("assiduidade")) {
+							else if (tabela.equals("assiduidade") || tabela.equals("Assiduidade")) {
 
-								assiduidade++;
+								assiduidade = row;
 								progress++;
+
+								historico.setOcorrencia(historico.getOcorrencia() + "/Assiduidade");
 
 							}
 
-							else if (tabela.equals("matriculas")) {
+							else if (tabela.equals("matriculas") || tabela.equals("Matriculas")) {
 
-								matriculas++;
+								matriculas = row;
 								progress++;
+
+								historico.setOcorrencia(historico.getOcorrencia() + "/Matriculas");
 
 							}
 
-							else if (tabela.equals("matriculas_modalidades")) {
+							else if (tabela.equals("matriculas_modalidades")
+									|| tabela.equals("Matriculas_modalidades")) {
 
-								matriculas_modalidades++;
+								matriculas_modalidades = row;
 								progress++;
+
+								historico.setOcorrencia(historico.getOcorrencia() + "/Matriculas_modalidades");
 
 							}
 
-							else if (tabela.equals("faturas_matriculas")) {
+							else if (tabela.equals("faturas_matriculas") || tabela.equals("Faturas_matriculas")) {
 
-								faturas_matriculas++;
+								faturas_matriculas = row;
 								progress++;
+
+								historico.setOcorrencia(historico.getOcorrencia() + "/Faturas_matriculas");
 
 							}
 
-							else if (tabela.equals("cidades")) {
+							else if (tabela.equals("cidades") || tabela.equals("Cidades")) {
 
-								cidades++;
+								cidades = row;
 								progress++;
+
+								historico.setOcorrencia(historico.getOcorrencia() + "/Cidades");
 
 							}
 
@@ -192,98 +225,124 @@ public class NextReplicationExecute {
 
 						}
 
-						System.out.println("ëstive aqui");
-
 						JOptionPane.showMessageDialog(io_window, "Iniciando!", "Alerta:",
 								JOptionPane.INFORMATION_MESSAGE);
 
 						progressPerTable = 100 / progress;
 						progress = 0;
 						io_window.setProgress(progress);
+						
+						row = 0;
+						
+						while (row <= LastOrdem) {
+							
+							if (alunos == row) {
 
-						if (alunos != 0) {
+								lines_changed = lines_changed + ReplicateStudents();
+								progress = progress + progressPerTable;
+								io_window.setProgress(progress);
+								
+								row++;
 
-							lines_changed = lines_changed + ReplicateStudents();
-							progress = progress + progressPerTable;
-							io_window.setProgress(progress);
+							}
 
+							if (planos == row) {
+
+								lines_changed = lines_changed + ReplicatePlans();
+								progress = progress + progressPerTable;
+								io_window.setProgress(progress);
+
+								row++;
+								
+							}
+
+							if (graduacoes == row) {
+
+								lines_changed = lines_changed + ReplicateGraduation();
+								progress = progress + progressPerTable;
+								io_window.setProgress(progress);
+
+								row++;
+								
+							}
+
+							if (modalidades == row) {
+
+								lines_changed = lines_changed + ReplicateModality();
+								progress = progress + progressPerTable;
+								io_window.setProgress(progress);
+
+								row++;
+								
+							}
+
+							if (usuarios == row) {
+
+								lines_changed = lines_changed + ReplicateUsers();
+								progress = progress + progressPerTable;
+								io_window.setProgress(progress);
+
+								row++;
+								
+							}
+					
+							if (assiduidade == row) {
+
+								lines_changed = lines_changed + ReplicateAssiduidade();
+								progress = progress + progressPerTable;
+								io_window.setProgress(progress);
+
+								row++;
+								
+							}
+
+							if (matriculas == row) {
+
+								lines_changed = lines_changed + ReplicateMatriculas();
+								progress = progress + progressPerTable;
+								io_window.setProgress(progress);
+								
+								row++;
+
+							}
+
+							if (matriculas_modalidades == row) {
+
+								lines_changed = lines_changed + ReplicateMatriculas_modalidades();
+								progress = progress + progressPerTable;
+								io_window.setProgress(progress);
+								
+								row++;
+
+							}
+
+							if (faturas_matriculas == row) {
+
+								lines_changed = lines_changed + ReplicateFaturas_matriculas();
+								progress = progress + progressPerTable;
+								io_window.setProgress(progress);
+								
+								row++;
+
+							}
+
+							if (cidades == row) {
+
+								lines_changed = lines_changed + ReplicateCidade();
+								progress = progress + progressPerTable;
+								io_window.setProgress(progress);
+								
+								row++;
+
+							}
+							
 						}
+						
+						historico.setFim_data_hora(new Timestamp(System.currentTimeMillis()));
+						TableReplicationExecutionDAO historicoDAO = new TableReplicationExecutionDAO(conn);
+						historicoDAO.Insert(historico);
 
-						if (planos != 0) {
-
-							lines_changed = lines_changed + ReplicatePlans();
-							progress = progress + progressPerTable;
-							io_window.setProgress(progress);
-
-						}
-
-						if (graduacoes != 0) {
-
-							lines_changed = lines_changed + ReplicateGraduation();
-							progress = progress + progressPerTable;
-							io_window.setProgress(progress);
-
-						}
-
-						if (modalidades != 0) {
-
-							lines_changed = lines_changed + ReplicateModality();
-							progress = progress + progressPerTable;
-							io_window.setProgress(progress);
-
-						}
-
-						if (usuarios != 0) {
-
-							lines_changed = lines_changed + ReplicateUsers();
-							progress = progress + progressPerTable;
-							io_window.setProgress(progress);
-
-						}
-
-						if (assiduidade != 0) {
-
-							lines_changed = lines_changed + ReplicateAssiduidade();
-							progress = progress + progressPerTable;
-							io_window.setProgress(progress);
-
-						}
-
-						if (matriculas != 0) {
-
-							lines_changed = lines_changed + ReplicateMatriculas();
-							progress = progress + progressPerTable;
-							io_window.setProgress(progress);
-
-						}
-
-						if (matriculas_modalidades != 0) {
-
-							lines_changed = lines_changed + ReplicateMatriculas_modalidades();
-							progress = progress + progressPerTable;
-							io_window.setProgress(progress);
-
-						}
-
-						if (faturas_matriculas != 0) {
-
-							lines_changed = lines_changed + ReplicateFaturas_matriculas();
-							progress = progress + progressPerTable;
-							io_window.setProgress(progress);
-
-						}
-
-						if (cidades != 0) {
-
-							lines_changed = lines_changed + ReplicateCidade();
-							progress = progress + progressPerTable;
-							io_window.setProgress(progress);
-
-						}
-
-						JOptionPane.showMessageDialog(io_window, "Sucesso!", "Alerta:",
-								JOptionPane.INFORMATION_MESSAGE);
-
+						JOptionPane.showMessageDialog(io_window, "Sucesso!", "Alerta:", JOptionPane.INFORMATION_MESSAGE);
 						matarThread = true;
 
 					} catch (SQLException e) {
@@ -292,6 +351,7 @@ public class NextReplicationExecute {
 					}
 
 				}
+
 			}
 
 		}).start();
@@ -489,6 +549,8 @@ public class NextReplicationExecute {
 		InvoiceDAO destiny_dao = new InvoiceDAO(conn_destiny);
 
 		List<Invoice> List = origin_dao.SelectAllP(1);
+
+		List.get(List.size());
 
 		int Rows = 0;
 
