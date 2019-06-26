@@ -550,8 +550,6 @@ public class NextReplicationExecute {
 
 		List<Invoice> List = origin_dao.SelectAllP(1);
 
-		List.get(List.size());
-
 		int Rows = 0;
 
 		conn_destiny.setAutoCommit(false);
