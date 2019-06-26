@@ -32,11 +32,13 @@ public class PrincipalWindow extends JFrame {
 	JMenuItem itemReplicationDirection;
 	JMenuItem itemReplicationTable;
 	JMenuItem itemReplication;
+	JMenuItem itemProcess;
 	JMenu menuCadastros;
 	JMenu menuReplica;
 
 	NextWindowReplication rplc;
 	ReplicationFrm rf;
+	ReplicationProcessFrm rp;
 	JLabel lbUsuarioHora;
 
 	public static void main(String[] args) {
@@ -157,12 +159,14 @@ public class PrincipalWindow extends JFrame {
 		itemReplicationTable = new JMenuItem("Cadastro de tabelas");
 		itemReplication = new JMenuItem("Replicação");
 		itemReplicationDirection = new JMenuItem("Direção");
+		itemProcess = new JMenuItem("Cadastro de processo");
 		// icones dos itens
 
 		// itemUsuariosSist.setIcon(new
 		// ImageIcon(PlansFrm.class.getResource("/view/images/aplicacao.png")));
 		menuCadastros.add(itemConnectionReplication);
 		menuCadastros.add(itemReplicationTable);
+		menuCadastros.add(itemProcess);
 		menuReplica.add(itemReplication);
 		menuReplica.add(itemReplicationDirection);
 		
@@ -267,6 +271,32 @@ public class PrincipalWindow extends JFrame {
 			}
 
 			private void JanelaFocar(ReplicationFrm us) {
+				try {
+					us.setSelected(true);
+				} catch (PropertyVetoException ex) {
+					ex.printStackTrace();
+				}
+
+			}
+		});
+		
+		itemProcess.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (JanelaVerificar(ReplicationProcessFrm.class.getName())) {
+					JanelaFocar(rp);
+				} else {
+					rp = new ReplicationProcessFrm();
+					rp.setName(ReplicationFrm.class.getName());
+					rp.setLocation(1, 1);
+					desktopPane.add(rp);
+					rp.setVisible(true);
+				}
+
+			}
+
+			private void JanelaFocar(ReplicationProcessFrm us) {
 				try {
 					us.setSelected(true);
 				} catch (PropertyVetoException ex) {
