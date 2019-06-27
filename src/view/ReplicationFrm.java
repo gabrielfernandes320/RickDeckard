@@ -138,12 +138,40 @@ public class ReplicationFrm extends JInternalFrame {
 		JButton btnTestarConexo = new JButton("Testar Conexao");
 		btnTestarConexo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					Connection conn = ConnectionFactory.getConnection(tbIP.getText(), tbPort.getText(), tbDBname.getText(), "admin", "admin");
-					JOptionPane.showMessageDialog(null,"Conectado com sucesso!");
-				} catch (Exception e2) {
-					JOptionPane.showMessageDialog(null,"Erro na conexao!");
+				
+				if(cbDBmodel.getSelectedItem().toString().equals("MySQL")) {
+					
+					try {
+						
+						Connection conn = ConnectionFactory.getMySQLConnection(tbIP.getText(), tbPort.getText(), tbDBname.getText(), "root", "root");
+						JOptionPane.showMessageDialog(null,"Conectado com sucesso!");
+						
+					}
+					catch(Exception e1){
+						
+						JOptionPane.showMessageDialog(null,"Erro de conexão!");
+						
+					}
+					
 				}
+				
+				else {
+					
+					try {
+						
+						Connection conn = ConnectionFactory.getConnection(tbIP.getText(), tbPort.getText(), tbDBname.getText(), "admin", "admin");
+						JOptionPane.showMessageDialog(null,"Conectado com sucesso!");
+						
+					}
+					catch(Exception e1){
+						
+						JOptionPane.showMessageDialog(null,"Erro de conexão!");
+						
+					}
+					
+				}
+				
+
 				
 			}
 		});
@@ -152,7 +180,6 @@ public class ReplicationFrm extends JInternalFrame {
 //		
 	
 		btnSalvar.setEnabled(false);
-		
 		
 		
 		btnSalvar.addActionListener(new ActionListener() {
@@ -213,7 +240,7 @@ public class ReplicationFrm extends JInternalFrame {
 				ConectionReplication conrep = new ConectionReplication();
 				conrep.setConnectionName(tbDescription.getText());
 				
-				Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
+				Connection conn = ConnectionFactory.getConnection("nextDB", "admin", "admin");
 				ConectionsReplicationDAO crd = null;
 				try {
 					crd = new ConectionsReplicationDAO(conn);
@@ -247,7 +274,7 @@ public class ReplicationFrm extends JInternalFrame {
 				ConectionReplication conrep = new ConectionReplication();
 				conrep.setConnectionName(tbDescription.getText());
 				
-				Connection conn = ConnectionFactory.getConnection("masterReplicator", "admin", "admin");
+				Connection conn = ConnectionFactory.getConnection("nextDB", "admin", "admin");
 				ConectionsReplicationDAO crd = null;
 				try {
 					crd = new ConectionsReplicationDAO(conn);

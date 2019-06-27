@@ -179,8 +179,6 @@ public class NextWindowReplication<E> extends JInternalFrame implements ActionLi
 
 		TableReplicationDirectionDAO directionDAO = new TableReplicationDirectionDAO(conn);
 
-		origemLbl.setText(directionDAO.selectOrigem(Integer.parseInt(directionCmb.getSelectedItem().toString())));
-		destinoLbl.setText(directionDAO.selectDestino(Integer.parseInt(directionCmb.getSelectedItem().toString())));
 
 	}
 

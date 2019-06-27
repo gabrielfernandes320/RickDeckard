@@ -18,7 +18,7 @@ public class CitiesDAO extends MasterDAO {
 
 	private String is_selectAll = "SELECT * from cidades;";
 	
-	private String is_insert = "INSERT INTO public.cidades(cidade, estado, pais)  VALUES (?, ?, ?);";
+	private String is_insert = "INSERT INTO cidades(cidade, estado, pais)  VALUES (?, ?, ?);";
 
 	private PreparedStatement pst_selectAll;
 	private PreparedStatement pst_insert;

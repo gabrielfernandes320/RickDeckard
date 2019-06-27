@@ -11,7 +11,7 @@ import model.Usuario;
 
 public class ConectionsReplicationDAO extends MasterDAO {
 
-    private String is_select = "select codigo_replicacao,nome,endereco,porta,database from TB_REPLICACAO where nome = ?";
+    private String is_select = "select codigo_replicacao, nome , endereco, porta, database, tipo_banco from TB_REPLICACAO where nome = ? ";
     
     private String is_selectConectionNames = "select nome from TB_REPLICACAO";
 
@@ -56,7 +56,7 @@ public class ConectionsReplicationDAO extends MasterDAO {
 
         // Seta os parametros.
         
-        Set(pst_select, 1, ((ConectionReplication) parameter).getConnectionName());
+        Set(pst_select, 1, ((ConectionReplication) parameter).getDatabaseSID());
 
       //is_select.replace("1?", ((ConectionReplication) parameter).getConnectionName());
       //pst_select = io_connection.prepareStatement(is_select);
@@ -69,7 +69,8 @@ public class ConectionsReplicationDAO extends MasterDAO {
             connRep.setConnectionName(rst.getString("nome"));
             connRep.setConnectionAddress(rst.getString("endereco"));
             connRep.setConnectionPort(rst.getString("porta"));
-            connRep.setDatabaseSID("database");
+            connRep.setDatabaseSID(rst.getString("database"));
+            connRep.setDatabaseType(rst.getString("tipo_banco"));
 
             return connRep;
 
@@ -77,7 +78,7 @@ public class ConectionsReplicationDAO extends MasterDAO {
         return null;
     }
 
-    public Object Select(String parameter) throws SQLException {
+    public ConectionReplication Select(String parameter) throws SQLException {
         ConectionReplication connRep = null;
 
         // Seta os parametros.
@@ -96,6 +97,7 @@ public class ConectionsReplicationDAO extends MasterDAO {
             connRep.setConnectionAddress(rst.getString("endereco"));
             connRep.setConnectionPort(rst.getString("porta"));
             connRep.setDatabaseSID(rst.getString("database"));
+            connRep.setDatabaseType(rst.getString("tipo_banco"));
 
             return connRep;
 

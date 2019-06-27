@@ -44,8 +44,8 @@ public class NextReplicationExecute {
 	private ConectionReplication origin_connection = null;
 	private ConectionReplication destiny_connection = null;
 	private Connection conn;
-	private Connection conn_origin = null;
-	private Connection conn_destiny = null;
+	private Connection conn_origin;
+	private Connection conn_destiny;
 
 	private int alunos = 0;
 	private int planos = 0;
@@ -81,16 +81,43 @@ public class NextReplicationExecute {
 		ConectionsReplicationDAO ConnectionsDAO = new ConectionsReplicationDAO(conn);
 
 		// Guardo a conexão.
-		String DB_Origem = DirectionDAO.selectOrigem(io_window.getDirection());
-		origin_connection = (ConectionReplication) ConnectionsDAO.Select(DB_Origem);
+		origin_connection = DirectionDAO.selectOrigem(io_window.getDirection());
+		origin_connection = ConnectionsDAO.Select(origin_connection.getDatabaseSID());
+		origin_connection.setPassword(DirectionDAO.selectOrigemPassword(io_window.getDirection()));
+		origin_connection.setUser(DirectionDAO.selectOrigemUser(io_window.getDirection()));
 
-		String DB_Destino = DirectionDAO.selectDestino(io_window.getDirection());
-		destiny_connection = (ConectionReplication) ConnectionsDAO.Select(DB_Destino);
+		destiny_connection = DirectionDAO.selectDestino(io_window.getDirection());
+		destiny_connection = ConnectionsDAO.Select(destiny_connection.getDatabaseSID());
+		destiny_connection.setPassword(DirectionDAO.selectDestinoPassword(io_window.getDirection()));
+		destiny_connection.setUser(DirectionDAO.selectDestinoUser(io_window.getDirection()));
 
-		conn_origin = ConnectionFactory.getConnection(origin_connection.getConnectionAddress(),
-				origin_connection.getConnectionPort(), origin_connection.getDatabaseSID(), "admin", "admin");
-		conn_destiny = ConnectionFactory.getConnection(destiny_connection.getConnectionAddress(),
-				destiny_connection.getConnectionPort(), destiny_connection.getDatabaseSID(), "admin", "admin");
+		// DIFERENCIAR ENTRE MYSQL E POSTGRE
+		if (origin_connection.getDatabaseType().equals("MySQL")) {
+
+			conn_origin = ConnectionFactory.getMySQLConnection(origin_connection.getConnectionAddress(),
+					origin_connection.getConnectionPort(), origin_connection.getDatabaseSID(),
+					origin_connection.getUser(), origin_connection.getPassword());
+
+		} else {
+
+			conn_origin = ConnectionFactory.getConnection(origin_connection.getConnectionAddress(),
+					origin_connection.getConnectionPort(), origin_connection.getDatabaseSID(),
+					origin_connection.getUser(), origin_connection.getPassword());
+		}
+
+		if (destiny_connection.getDatabaseType().equals("MySQL")) {
+
+			conn_destiny = ConnectionFactory.getMySQLConnection(destiny_connection.getConnectionAddress(),
+					destiny_connection.getConnectionPort(), destiny_connection.getDatabaseSID(),
+					destiny_connection.getUser(), destiny_connection.getPassword());
+
+		} else {
+
+			conn_destiny = ConnectionFactory.getConnection(destiny_connection.getConnectionAddress(),
+					destiny_connection.getConnectionPort(), destiny_connection.getDatabaseSID(),
+					destiny_connection.getUser(), destiny_connection.getPassword());
+
+		}
 
 	}
 
@@ -107,12 +134,14 @@ public class NextReplicationExecute {
 
 					try {
 
+						System.out.println("cheguei aqui");
+
 						tbReplicacaoHistorico historico = new tbReplicacaoHistorico();
 
 						historico.setInicio_data_hora(new Timestamp(System.currentTimeMillis()));
 						historico.setProcesso(io_window.getProcess());
-						historico.setDatabase_origem(origin_connection.getDatabaseSID());
-						historico.setDatabase_destino(destiny_connection.getDatabaseSID());
+						historico.setDatabase_origem(origin_connection.getConnectionName());
+						historico.setDatabase_destino(destiny_connection.getConnectionName());
 						historico.setUsuario("admin");
 						historico.setUsuario_origem("admin");
 						historico.setUsuario_destino("admin");
@@ -231,17 +260,17 @@ public class NextReplicationExecute {
 						progressPerTable = 100 / progress;
 						progress = 0;
 						io_window.setProgress(progress);
-						
+
 						row = 0;
-						
+
 						while (row <= LastOrdem) {
-							
+
 							if (alunos == row) {
 
 								lines_changed = lines_changed + ReplicateStudents();
 								progress = progress + progressPerTable;
 								io_window.setProgress(progress);
-								
+
 								row++;
 
 							}
@@ -253,7 +282,7 @@ public class NextReplicationExecute {
 								io_window.setProgress(progress);
 
 								row++;
-								
+
 							}
 
 							if (graduacoes == row) {
@@ -263,7 +292,7 @@ public class NextReplicationExecute {
 								io_window.setProgress(progress);
 
 								row++;
-								
+
 							}
 
 							if (modalidades == row) {
@@ -273,7 +302,7 @@ public class NextReplicationExecute {
 								io_window.setProgress(progress);
 
 								row++;
-								
+
 							}
 
 							if (usuarios == row) {
@@ -283,9 +312,9 @@ public class NextReplicationExecute {
 								io_window.setProgress(progress);
 
 								row++;
-								
+
 							}
-					
+
 							if (assiduidade == row) {
 
 								lines_changed = lines_changed + ReplicateAssiduidade();
@@ -293,7 +322,7 @@ public class NextReplicationExecute {
 								io_window.setProgress(progress);
 
 								row++;
-								
+
 							}
 
 							if (matriculas == row) {
@@ -301,7 +330,7 @@ public class NextReplicationExecute {
 								lines_changed = lines_changed + ReplicateMatriculas();
 								progress = progress + progressPerTable;
 								io_window.setProgress(progress);
-								
+
 								row++;
 
 							}
@@ -311,7 +340,7 @@ public class NextReplicationExecute {
 								lines_changed = lines_changed + ReplicateMatriculas_modalidades();
 								progress = progress + progressPerTable;
 								io_window.setProgress(progress);
-								
+
 								row++;
 
 							}
@@ -321,7 +350,7 @@ public class NextReplicationExecute {
 								lines_changed = lines_changed + ReplicateFaturas_matriculas();
 								progress = progress + progressPerTable;
 								io_window.setProgress(progress);
-								
+
 								row++;
 
 							}
@@ -331,18 +360,19 @@ public class NextReplicationExecute {
 								lines_changed = lines_changed + ReplicateCidade();
 								progress = progress + progressPerTable;
 								io_window.setProgress(progress);
-								
+
 								row++;
 
 							}
-							
+
 						}
-						
+
 						historico.setFim_data_hora(new Timestamp(System.currentTimeMillis()));
 						TableReplicationExecutionDAO historicoDAO = new TableReplicationExecutionDAO(conn);
 						historicoDAO.Insert(historico);
 
-						JOptionPane.showMessageDialog(io_window, "Sucesso!", "Alerta:", JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(io_window, "Sucesso!", "Alerta:",
+								JOptionPane.INFORMATION_MESSAGE);
 						matarThread = true;
 
 					} catch (SQLException e) {
@@ -371,7 +401,15 @@ public class NextReplicationExecute {
 
 		for (Aluno aluno : List) {
 
-			destiny_dao.Insert(List.get(Rows));
+			try {
+
+				destiny_dao.Insert(List.get(Rows));
+
+			} catch (Exception e) {
+
+				System.out.println("deu ruim em alunos");
+
+			}
 
 			Rows++;
 
@@ -394,7 +432,16 @@ public class NextReplicationExecute {
 
 		for (Usuario usuario : List) {
 
-			destiny_dao.Insert(List.get(Rows));
+			try {
+				
+				destiny_dao.Insert(List.get(Rows));
+				
+			}
+			catch(Exception e){
+				
+				System.out.println("deu ruim em usuarios");
+				
+			}
 
 			Rows++;
 
@@ -419,7 +466,16 @@ public class NextReplicationExecute {
 
 		{
 
-			destiny_dao.Insert(List.get(Rows));
+			try {
+				
+				destiny_dao.Insert(List.get(Rows));
+				
+			}
+			catch(Exception e){
+				
+				System.out.println("deu ruim em planos");
+				
+			}
 
 			Rows++;
 
@@ -442,7 +498,16 @@ public class NextReplicationExecute {
 
 		for (Modalidades modalidades : List) {
 
-			destiny_dao.Insert(List.get(Rows));
+			try {
+				
+				destiny_dao.Insert(List.get(Rows));
+				
+			}
+			catch(Exception e){
+				
+				System.out.println("deu ruim em modalidades");
+				
+			}
 
 			Rows++;
 
@@ -465,7 +530,16 @@ public class NextReplicationExecute {
 
 		for (Graduacoes graduacoes : List) {
 
-			destiny_dao.Insert(List.get(Rows));
+			try {
+				
+				destiny_dao.Insert(List.get(Rows));
+				
+			}
+			catch(Exception e){
+				
+				System.out.println("deu ruim em graduacoes");
+				
+			}
 
 			Rows++;
 
@@ -487,7 +561,17 @@ public class NextReplicationExecute {
 		conn_destiny.setAutoCommit(false);
 
 		for (Assiduidade assiduidade : List) {
-			destiny_dao.Insert(List.get(Rows));
+			
+			try {
+				
+				destiny_dao.Insert(List.get(Rows));
+				
+			}
+			catch(Exception e){
+				
+				System.out.println("deu ruim em assiduidade");
+				
+			}
 
 			Rows++;
 
@@ -510,7 +594,16 @@ public class NextReplicationExecute {
 
 		for (Matricula matricula : List) {
 
-			destiny_dao.Insert(List.get(Rows));
+			try {
+				
+				destiny_dao.Insert(List.get(Rows));
+				
+			}
+			catch(Exception e){
+				
+				System.out.println("deu ruim em matriculas");
+				
+			}
 
 			Rows++;
 
@@ -533,7 +626,16 @@ public class NextReplicationExecute {
 
 		for (Matricula_Modalidade matricula_Modalidade : List) {
 
-			destiny_dao.Insert(List.get(Rows));
+			try {
+				
+				destiny_dao.Insert(List.get(Rows));
+				
+			}
+			catch(Exception e){
+				
+				System.out.println("deu ruim em matricula modalidade");
+				
+			}
 
 			Rows++;
 
@@ -556,7 +658,16 @@ public class NextReplicationExecute {
 
 		for (Invoice invoice : List) {
 
-			destiny_dao.Insert(List.get(Rows));
+			try {
+				
+				destiny_dao.Insert(List.get(Rows));
+				
+			}
+			catch(Exception e){
+				
+				System.out.println("deu ruim em fatura matricula");
+				
+			}
 
 			Rows++;
 
@@ -579,7 +690,16 @@ public class NextReplicationExecute {
 
 		for (Cidade cidade : List) {
 
-			destiny_dao.Insert(cidade);
+			try {
+				
+				destiny_dao.Insert(List.get(Rows));
+				
+			}
+			catch(Exception e){
+				
+				System.out.println("deu ruim em cidade");
+				
+			}
 
 			Rows++;
 

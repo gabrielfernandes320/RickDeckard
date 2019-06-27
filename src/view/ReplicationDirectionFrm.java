@@ -62,7 +62,7 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 	private JLabel label_1;
 	private JTextField txfUsuarioDestino;
 	private JTextField txfDbDestino;
-	private JLabel label_2;
+	private JLabel lblConexo;
 	private JPanel panelPeriodo;
 	private JTextField txfDia;
 	private JLabel lblHora;
@@ -304,7 +304,7 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				txfDbOrigem.setBounds(86, 23, 170, 20);
 				panel_1.add(txfDbOrigem);
 				
-				lblUsuario = new JLabel("Database:");
+				lblUsuario = new JLabel("Conex\u00E3o:");
 				lblUsuario.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				lblUsuario.setBounds(10, 24, 67, 14);
 				panel_1.add(lblUsuario);
@@ -375,10 +375,10 @@ public class ReplicationDirectionFrm extends JInternalFrame {
 				txfDbDestino.setBounds(86, 23, 170, 20);
 				panel_2.add(txfDbDestino);
 				
-				label_2 = new JLabel("Database:");
-				label_2.setFont(new Font("Tahoma", Font.PLAIN, 15));
-				label_2.setBounds(10, 24, 67, 14);
-				panel_2.add(label_2);
+				lblConexo = new JLabel("Conex\u00E3o: ");
+				lblConexo.setFont(new Font("Tahoma", Font.PLAIN, 15));
+				lblConexo.setBounds(10, 24, 67, 14);
+				panel_2.add(lblConexo);
 				
 				panelPeriodo = new JPanel();
 				panelPeriodo.setLayout(null);

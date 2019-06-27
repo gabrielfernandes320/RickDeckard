@@ -17,8 +17,18 @@ public class ConectionReplication {
     private String DatabaseType;
 
     private String DatabaseURL;
+    
+    private String password;
 
-    public ConectionReplication(String replicationCode, String user,String connectionName, String connectionAddress, String connectionPort, String databaseSID, String databaseType, String databaseURL) {
+    public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public ConectionReplication(String replicationCode, String user,String connectionName, String connectionAddress, String connectionPort, String databaseSID, String databaseType, String databaseURL) {
         ReplicationCode = replicationCode;
         User = user;
         ConnectionName = connectionName;
